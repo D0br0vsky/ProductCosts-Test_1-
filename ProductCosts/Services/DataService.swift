@@ -19,9 +19,8 @@ final class DataService: DataServiceProtocol {
             switch result {
             case .success(let data):
                 DataStorage.dataShared.preparedData = data
-                print("data saved successfully ")
             case .failure(let error):
-                print("data not saved")
+                completion(.failure(error))
             }
         }
     }

@@ -35,6 +35,12 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
             self.updateUI()
         } else {
             
+//=======
+//        if !dataStorage.preparedData.isEmpty {
+//            self.groupedTransactions = groupTransactions(dataStorage.preparedData)
+//            self.updateUI()
+//        } else {
+//>>>>>>> 641d798 (I fixed everything, it works correctly, but there may be errors in data transfer)
             view?.startLoader()
             service.fetchTransactions { [weak self] (result: Result<[Transaction], Error>) in
                 guard let self else { return }
@@ -43,6 +49,7 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
                 case let .success(dataStorage):
                     DataStorage.dataShared.preparedData = dataStorage
                     let readyTransactionGroup = groupTransactions(dataStorage)
+                    self.groupedTransactions = groupTransactions(DataStorage.dataShared.preparedData)
                     self.updateUI()
                 case .failure(let error):
                     print("Failed to load transactions: \(error)")
