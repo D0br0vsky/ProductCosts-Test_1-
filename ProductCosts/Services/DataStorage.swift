@@ -5,7 +5,7 @@ final class DataStorage {
     static let dataShared = DataStorage()
     init() {}
     
-    var preparedData: [Transaction] = []
+    var preparedData: [TransactionDTO] = []
 }
 
 

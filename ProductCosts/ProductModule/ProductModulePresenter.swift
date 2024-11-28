@@ -14,8 +14,8 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
     private let service: DataServiceProtocol
     private let router: ProductModuleRouter
     private var dataStorage: DataStorage
-    private var model: [Transaction]?
-    private var groupedTransactions: [transactionDictionary] = []
+    private var model: [TransactionDTO]?
+    private var groupedTransactions: [TransactionModel] = []
     
     init(service: DataServiceProtocol, router: ProductModuleRouter, dataStorage: DataStorage) {
         self.service = service
@@ -30,7 +30,7 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
     }
     
     func viewDidLoad() {
-        if let saveData = DataStorage.dataShared.preparedData as? [Transaction] {
+        if let saveData = DataStorage.dataShared.preparedData as? [TransactionDTO] {
             let readyTransactionGroup = groupTransactions(saveData)
             self.updateUI()
         } else {
@@ -42,7 +42,7 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
 //        } else {
 //>>>>>>> 641d798 (I fixed everything, it works correctly, but there may be errors in data transfer)
             view?.startLoader()
-            service.fetchTransactions { [weak self] (result: Result<[Transaction], Error>) in
+            service.fetchTransactions { [weak self] (result: Result<[TransactionDTO], Error>) in
                 guard let self else { return }
                 self.view?.stopLoader()
                 switch result {
@@ -77,12 +77,12 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
 // MARK: - Extension func
 extension ProductModulePresenter {
     
-    private func groupTransactions(_ transactions: [Transaction]) -> [transactionDictionary] {
+    private func groupTransactions(_ transactions: [TransactionDTO]) -> [TransactionModel] {
         let grouped = transactions.reduce(into: [String: Int]()) { result, transaction in
             result[transaction.sku, default: 0] += 1
         }
         let result = grouped
-            .map { transactionDictionary(sku: $0.key, count: $0.value) }
+            .map { TransactionModel(sku: $0.key, count: $0.value) }
             .sorted { $0.sku < $1.sku }
         return result
     }

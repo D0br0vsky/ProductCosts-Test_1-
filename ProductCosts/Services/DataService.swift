@@ -2,8 +2,8 @@
 import Foundation
 
 protocol DataServiceProtocol {
-    func fetchTransactions(completion: @escaping (Result<[Transaction], Error>) -> Void)
-    func fetchRates(completion: @escaping (Result<[Rate], Error>) -> Void)
+    func fetchTransactions(completion: @escaping (Result<[TransactionDTO], Error>) -> Void)
+    func fetchRates(completion: @escaping (Result<[RateDTO], Error>) -> Void)
 }
 
 final class DataService: DataServiceProtocol {
@@ -14,11 +14,12 @@ final class DataService: DataServiceProtocol {
     }
     
     
-    func fetchTransactions(completion: @escaping (Result<[Transaction], Error>) -> Void) {
-        loadData.fetchData(from: "transactions", as: [Transaction].self) { result in
+    func fetchTransactions(completion: @escaping (Result<[TransactionDTO], Error>) -> Void) {
+        loadData.fetchData(from: "transactions", as: [TransactionDTO].self) { result in
             switch result {
             case .success(let data):
-                DataStorage.dataShared.preparedData = data
+      //          DataStorage.dataShared.preparedData = data      ->    разобраться с этим дерьмом
+                completion(.success(data))
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -26,11 +27,10 @@ final class DataService: DataServiceProtocol {
     }
     
     
-    func fetchRates(completion: @escaping (Result<[Rate], Error>) -> Void) {
-        loadData.fetchData(from: "rates", as: [Rate].self, completion: completion)
+    func fetchRates(completion: @escaping (Result<[RateDTO], Error>) -> Void) {
+        loadData.fetchData(from: "rates", as: [RateDTO].self, completion: completion)
     }
 }
-
 
 
 
