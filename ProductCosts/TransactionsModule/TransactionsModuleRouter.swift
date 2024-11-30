@@ -1,4 +1,8 @@
 
-final class TransactionsModuleRouter {
+protocol TransactionModuleRouterProtocol {
+    
+}
+
+final class TransactionsModuleRouter: TransactionModuleRouterProtocol {
     
 }

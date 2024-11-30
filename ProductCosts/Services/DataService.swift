@@ -15,15 +15,7 @@ final class DataService: DataServiceProtocol {
     
     
     func fetchTransactions(completion: @escaping (Result<[TransactionDTO], Error>) -> Void) {
-        loadData.fetchData(from: "transactions", as: [TransactionDTO].self) { result in
-            switch result {
-            case .success(let data):
-      //          DataStorage.dataShared.preparedData = data      ->    разобраться с этим дерьмом
-                completion(.success(data))
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
+        loadData.fetchData(from: "transactions", as: [TransactionDTO].self, completion: completion)
     }
     
     

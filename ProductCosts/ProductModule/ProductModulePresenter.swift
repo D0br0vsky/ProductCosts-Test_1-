@@ -8,59 +8,60 @@ protocol ProductModulePresenterProtocol {
 final class ProductModulePresenter: ProductModulePresenterProtocol {
     
     weak var view: ProductModuleViewProtocol?
-
     var title: String { "Product" }
     
     private let service: DataServiceProtocol
     private let router: ProductModuleRouter
-    private var dataStorage: DataStorage
-    private var model: [TransactionDTO]?
-    private var groupedTransactions: [TransactionModel] = []
     
-    init(service: DataServiceProtocol, router: ProductModuleRouter, dataStorage: DataStorage) {
+    private var model: [TransactionModel]?
+    private var groupedTransactions: [OperationModel] = []
+    
+    private var transactions: [TransactionModel] = []
+ 
+    // MARK: - Init
+    init(service: DataServiceProtocol, router: ProductModuleRouter) {
         self.service = service
         self.router = router
-        self.dataStorage = dataStorage
     }
     
-    func tapRow(index: Int) {
-        guard let model = model, model.indices.contains(index) else { return }
-        let selectedTransaction = model[index]
-        router.openModuleTransaction(with: selectedTransaction.sku)
-    }
     
+    // MARK: - Protocol Methods
     func viewDidLoad() {
-        if let saveData = DataStorage.dataShared.preparedData as? [TransactionDTO] {
-            let readyTransactionGroup = groupTransactions(saveData)
-            self.updateUI()
-        } else {
-            
-//=======
-//        if !dataStorage.preparedData.isEmpty {
-//            self.groupedTransactions = groupTransactions(dataStorage.preparedData)
-//            self.updateUI()
-//        } else {
-//>>>>>>> 641d798 (I fixed everything, it works correctly, but there may be errors in data transfer)
-            view?.startLoader()
-            service.fetchTransactions { [weak self] (result: Result<[TransactionDTO], Error>) in
-                guard let self else { return }
-                self.view?.stopLoader()
-                switch result {
-                case let .success(dataStorage):
-                    DataStorage.dataShared.preparedData = dataStorage
-                    let readyTransactionGroup = groupTransactions(dataStorage)
-                    self.groupedTransactions = groupTransactions(DataStorage.dataShared.preparedData)
-                    self.updateUI()
-                case .failure(let error):
-                    print("Failed to load transactions: \(error)")
-                    self.view?.showError()
-                }
-            }
+        func viewDidLoad() {
+            transactionsViewDidLoad()
         }
     }
     
-    
-    func updateUI() {
+    func tapRow(index: Int) {
+        guard transactions.indices.contains(index) else { return }
+        let selectedTransaction = transactions[index]
+        router.openModuleTransaction(with: selectedTransaction.sku)
+    }
+}
+
+// MARK: - ViewDidLoad
+extension ProductModulePresenter {
+    func transactionsViewDidLoad() {
+        view?.startLoader()
+        service.fetchTransactions { [weak self] result in
+            guard let self = self else { return }
+            self.view?.stopLoader()
+            switch result {
+            case .success(let dtoTransactions):
+                transactions = dtoTransactions.compactMap { DefaultMapper().transactionMapper(dto: $0) }
+                groupedTransactions = groupTransactions(transactions)
+                updateUI()
+            case .failure(let error):
+                self.view?.showError()
+            }
+        }
+    }
+}
+
+
+// MARK: - Extension private func
+extension ProductModulePresenter {
+    private func updateUI() {
         guard !groupedTransactions.isEmpty else {
             view?.showEmpty()
             return
@@ -71,19 +72,13 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
         let viewModel = ProductModuleView.Model(items: items)
         view?.update(model: viewModel)
     }
-}
-
-
-// MARK: - Extension func
-extension ProductModulePresenter {
     
-    private func groupTransactions(_ transactions: [TransactionDTO]) -> [TransactionModel] {
+    private func groupTransactions(_ transactions: [TransactionModel]) -> [OperationModel] {
         let grouped = transactions.reduce(into: [String: Int]()) { result, transaction in
             result[transaction.sku, default: 0] += 1
         }
-        let result = grouped
-            .map { TransactionModel(sku: $0.key, count: $0.value) }
-            .sorted { $0.sku < $1.sku }
+        let result = grouped.map { OperationModel(sku: $0.key, count: $0.value) }
         return result
     }
 }
+
