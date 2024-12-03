@@ -1,7 +1,6 @@
 import UIKit
 
 final class TransactionModuleFactory {
-    
     struct Context {
         let transaction: TransactionModel
     }

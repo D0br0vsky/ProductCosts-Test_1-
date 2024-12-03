@@ -6,7 +6,6 @@ final class ProductModuleFactory {
     }
     
     func make() -> UIViewController {
-        
         let factory = TransactionModuleFactory()
         let dataLoader = DataLoader()
         let service = DataService(loadData: dataLoader)

@@ -53,7 +53,7 @@ private extension TransactionModulePresenter {
     }
     
     func indicatorSymbols(_ transactions: TransactionModel, _ rate: RateModel) -> String {
-        
+        // добавить
         return "Fun"
     }
     
