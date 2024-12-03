@@ -2,7 +2,7 @@
 import UIKit
 
 protocol ProductModuleRouterProtocol: AnyObject {
-    func openModuleTransaction(with param: String)
+    func openModuleTransaction(with transaction: TransactionModel, rate: RateModel)
 }
 
 final class ProductModuleRouter: ProductModuleRouterProtocol {
@@ -17,9 +17,9 @@ final class ProductModuleRouter: ProductModuleRouterProtocol {
         self.root = root
     }
 
-    func openModuleTransaction(with sku: String) {
+    func openModuleTransaction(with transaction: TransactionModel, rate: RateModel) {
         
-        let context = TransactionModuleFactory.Context(sku: sku)
+        let context = TransactionModuleFactory.Context(transaction: transaction, rate: rate)
         let viewController = factory.make(context: context)
         root?.navigationController?.pushViewController(viewController, animated: true)
     }

@@ -38,7 +38,7 @@ final class ProductModuleViewCell: UITableViewCell {
     
     private lazy var line: UIView = {
         let view = UIView()
-        view.backgroundColor = .black
+        view.backgroundColor = .lightGray
         return view
     }()
     
@@ -48,7 +48,7 @@ final class ProductModuleViewCell: UITableViewCell {
         contentView.backgroundColor = .systemBackground
         backgroundColor = .systemBackground
         selectionStyle = .none
-        tintColor = .systemRed
+        tintColor = .systemGray
         
         commonInit()
     }
@@ -64,11 +64,11 @@ final class ProductModuleViewCell: UITableViewCell {
     }
 }
 
-
+// MARK: - ExtensionConstrains
 private extension ProductModuleViewCell {
     func commonInit() {
         setupSubview()
-        setupCinstraints()
+        setupConstraints()
     }
     
     func setupSubview() {
@@ -78,7 +78,7 @@ private extension ProductModuleViewCell {
         contentView.addSubview(line)
     }
     
-    func setupCinstraints() {
+    func setupConstraints() {
         
         stack.translatesAutoresizingMaskIntoConstraints = false
         line.translatesAutoresizingMaskIntoConstraints = false

@@ -17,6 +17,7 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
     private var groupedTransactions: [OperationModel] = []
     
     private var transactions: [TransactionModel] = []
+    private var rates: [RateModel] = []
  
     // MARK: - Init
     init(service: DataServiceProtocol, router: ProductModuleRouter) {
@@ -29,13 +30,14 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
     func viewDidLoad() {
         func viewDidLoad() {
             transactionsViewDidLoad()
+            ratesViewDidLoad()
         }
     }
     
     func tapRow(index: Int) {
         guard transactions.indices.contains(index) else { return }
         let selectedTransaction = transactions[index]
-        router.openModuleTransaction(with: selectedTransaction.sku)
+        router.openModuleTransaction(with: selectedTransaction, rate: rates)
     }
 }
 
@@ -56,24 +58,38 @@ extension ProductModulePresenter {
             }
         }
     }
+    func ratesViewDidLoad() {
+        view?.startLoader()
+        service.fetchRates { [weak self] result in
+            guard let self = self else { return }
+            self.view?.stopLoader()
+            switch result {
+            case .success(let dtoRates):
+                rates = dtoRates.compactMap { DefaultMapper().rateMapper(dto: $0) }
+            case .failure(let error):
+                self.view?.showError()
+            }
+        }
+    }
+
 }
 
 
-// MARK: - Extension private func
-extension ProductModulePresenter {
-    private func updateUI() {
+// MARK: - Extension private
+private extension ProductModulePresenter {
+    func updateUI() {
         guard !groupedTransactions.isEmpty else {
             view?.showEmpty()
             return
         }
         let items: [ProductModuleViewCell.Model] = groupedTransactions.map {
-            .init(sku: $0.sku, transactionCount: "\($0.count) transactions")
+            .init(sku: $0.sku, transactionCount: "\($0.count) transactions >")
         }
         let viewModel = ProductModuleView.Model(items: items)
         view?.update(model: viewModel)
     }
     
-    private func groupTransactions(_ transactions: [TransactionModel]) -> [OperationModel] {
+    func groupTransactions(_ transactions: [TransactionModel]) -> [OperationModel] {
         let grouped = transactions.reduce(into: [String: Int]()) { result, transaction in
             result[transaction.sku, default: 0] += 1
         }

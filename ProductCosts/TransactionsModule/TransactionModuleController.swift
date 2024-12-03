@@ -1,18 +1,19 @@
 import UIKit
 
-protocol TransactionModuleControllerProtocol: AnyObject {
-    func update(with transactions: [String], total: String)
+protocol TransactionModuleViewProtocol: AnyObject {
+    func update(model: TransactionModuleView.Model)
+    func showError()
+    func showEmpty()
+    func startLoader()
+    func stopLoader()
 }
 
-final class TransactionModuleController: UIViewController, TransactionModuleControllerProtocol {
+final class TransactionModuleController: UIViewController {
     
-    private let presenter: TransactionModulePresenterProtocol
-    private lazy var tableView = UITableView()
+    private lazy var customView = TransactionModuleView(presenter: presenter)
+    private let presenter: TransactionModulePresenter
     
-    private var transactions: [String] = []
-    private var total: String = ""
-    
-    init(presenter: TransactionModulePresenterProtocol) {
+    init(presenter: TransactionModulePresenter) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
     }
@@ -22,57 +23,37 @@ final class TransactionModuleController: UIViewController, TransactionModuleCont
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func loadView() {
+        view = customView
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
-        presenter.viewDidLoad() 
-    }
-    
-    func update(with transactions: [String], total: String) {
-        self.transactions = transactions
-        self.total = total
-        tableView.reloadData()
+        title = presenter.transaction.sku
+        navigationController?.navigationBar.prefersLargeTitles = true
+        presenter.viewDidLoad()
     }
 }
 
-// MARK: - UITableViewDataSource
-extension TransactionModuleController: UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return transactions.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
-        cell.textLabel?.text = transactions[indexPath.row]
-        return cell
-    }
-    
-}
 
-
-// MARK: - ExtensionConstrains
-extension TransactionModuleController {
-    func setupUI() {
-        title = "Transactions"
-        setupConstraints()
-        setupSubviews()
+extension TransactionModuleController: TransactionModuleViewProtocol {
+    func update(model: TransactionModuleView.Model) {
+        customView.update(model: model)
     }
     
-    func setupSubviews() {
-        view.addSubview(tableView)
+    func showError() {
+        customView.showEmpty()
     }
     
-    func setupConstraints() {
-        
-        tableView.dataSource = self
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
+    func showEmpty() {
+        customView.showEmpty()
+    }
+    
+    func startLoader() {
+        customView.startLoader()
+    }
+    
+    func stopLoader() {
+        customView.stopLoader()
     }
 }

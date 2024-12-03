@@ -4,6 +4,10 @@ struct OperationModel {
     var count: Int
 }
 
+struct convertСurrencyModel {
+    
+}
+
 struct TransactionModel: Decodable {
     let amount: Double
     let currency: String
