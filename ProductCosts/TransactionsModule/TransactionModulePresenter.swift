@@ -6,31 +6,43 @@ protocol TransactionModulePresenterProtocol: AnyObject {
 
 final class TransactionModulePresenter: TransactionModulePresenterProtocol {
     
+    private let service: DataServiceProtocol
     let transaction: TransactionModel
-    let rate: RateModel
+    private var rates: [RateModel] = []
     
     var tittle: String { "\(transaction.sku)" }
     private var dod:[Int] = []
     
     weak var view: TransactionModuleViewProtocol?
     
-    init(transaction: TransactionModel, rate: RateModel) {
+    init(transaction: TransactionModel, service: DataServiceProtocol) {
+        self.service = service
         self.transaction = transaction
-        self.rate = rate
     }
     
     // MARK: - Protocol Methods
     func viewDidLoad() {
-        someViewDidLoad()
+        ratesViewDidLoad()
     }
     
     
     
 }
 
+// MARK: - ViewDidLoad
 extension TransactionModulePresenter {
-    func someViewDidLoad() {
-       //some update
+    func ratesViewDidLoad() {
+        view?.startLoader()
+        service.fetchRates { [weak self] result in
+            guard let self = self else { return }
+            self.view?.stopLoader()
+            switch result {
+            case .success(let dtoRates):
+                rates = dtoRates.compactMap { DefaultMapper().rateMapper(dto: $0) }
+            case .failure(let error):
+                self.view?.showError()
+            }
+        }
     }
 }
 

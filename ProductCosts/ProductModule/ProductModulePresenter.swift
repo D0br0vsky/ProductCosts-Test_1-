@@ -17,7 +17,6 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
     private var groupedTransactions: [OperationModel] = []
     
     private var transactions: [TransactionModel] = []
-    private var rates: [RateModel] = []
  
     // MARK: - Init
     init(service: DataServiceProtocol, router: ProductModuleRouter) {
@@ -30,14 +29,13 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
     func viewDidLoad() {
         func viewDidLoad() {
             transactionsViewDidLoad()
-            ratesViewDidLoad()
         }
     }
     
     func tapRow(index: Int) {
         guard transactions.indices.contains(index) else { return }
         let selectedTransaction = transactions[index]
-        router.openModuleTransaction(with: selectedTransaction, rate: rates)
+        router.openModuleTransaction(with: selectedTransaction)
     }
 }
 
@@ -58,20 +56,6 @@ extension ProductModulePresenter {
             }
         }
     }
-    func ratesViewDidLoad() {
-        view?.startLoader()
-        service.fetchRates { [weak self] result in
-            guard let self = self else { return }
-            self.view?.stopLoader()
-            switch result {
-            case .success(let dtoRates):
-                rates = dtoRates.compactMap { DefaultMapper().rateMapper(dto: $0) }
-            case .failure(let error):
-                self.view?.showError()
-            }
-        }
-    }
-
 }
 
 

@@ -18,4 +18,3 @@ final class ProductModuleFactory {
         return vc
     }
 }
-
