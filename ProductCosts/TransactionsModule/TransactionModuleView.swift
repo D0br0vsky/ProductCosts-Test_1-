@@ -6,6 +6,7 @@ final class TransactionModuleView: UIView {
     
     struct Model {
         let items: [Item]
+        let totalCount: String
     }
     
     private var model: Model?
@@ -47,6 +48,7 @@ final class TransactionModuleView: UIView {
     
     func update(model: Model) {
         self.model = model
+        totalCount.text = model.totalCount
         tableView.reloadData()
     }
     

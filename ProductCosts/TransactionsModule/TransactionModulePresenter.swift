@@ -7,17 +7,18 @@ protocol TransactionModulePresenterProtocol: AnyObject {
 final class TransactionModulePresenter: TransactionModulePresenterProtocol {
     
     private let service: DataServiceProtocol
-    let transaction: TransactionModel
+    private let operationModel: OperationModel
     private var rates: [RateModel] = []
+    private var symbolsDifferentCurrencies: [String] = []
     
-    var tittle: String { "\(transaction.sku)" }
-    private var dod:[Int] = []
+    var tittle: String { "\(operationModel.sku)" }
+    
     
     weak var view: TransactionModuleViewProtocol?
     
-    init(transaction: TransactionModel, service: DataServiceProtocol) {
+    init(operationModel: OperationModel, service: DataServiceProtocol) {
         self.service = service
-        self.transaction = transaction
+        self.operationModel = operationModel
     }
     
     // MARK: - Protocol Methods
@@ -39,6 +40,8 @@ extension TransactionModulePresenter {
             switch result {
             case .success(let dtoRates):
                 rates = dtoRates.compactMap { DefaultMapper().rateMapper(dto: $0) }
+                
+                updateUI()
             case .failure(let error):
                 self.view?.showError()
             }
@@ -49,12 +52,18 @@ extension TransactionModulePresenter {
 // MARK: - Extension private
 private extension TransactionModulePresenter {
     func updateUI() {
- 
+        
     }
     
-    func indicatorSymbols(_ transactions: TransactionModel, _ rate: RateModel) -> String {
-        // добавить
-        return "Fun"
+    func indicatorSymbols(_ transactions: TransactionModel) -> [String] {
+        // transactions.amount
+        // transactions.currency
+        
+        if transactions.currency == "USD" {
+            symbolsDifferentCurrencies.append("$") 
+            
+        }
+        return ["Fun"]
     }
     
     func convertGBP() {

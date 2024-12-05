@@ -13,11 +13,9 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
     private let service: DataServiceProtocol
     private let router: ProductModuleRouter
     
-    private var model: [TransactionModel]?
-    private var groupedTransactions: [OperationModel] = []
+    private var operationModel: [OperationModel] = []
     
-    private var transactions: [TransactionModel] = []
- 
+    
     // MARK: - Init
     init(service: DataServiceProtocol, router: ProductModuleRouter) {
         self.service = service
@@ -27,29 +25,25 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
     
     // MARK: - Protocol Methods
     func viewDidLoad() {
-        func viewDidLoad() {
-            transactionsViewDidLoad()
-        }
+        transactionsLoad()
     }
     
     func tapRow(index: Int) {
-        guard transactions.indices.contains(index) else { return }
-        let selectedTransaction = transactions[index]
+        guard operationModel.indices.contains(index) else { return }
+        let selectedTransaction = operationModel[index]
         router.openModuleTransaction(with: selectedTransaction)
     }
-}
-
-// MARK: - ViewDidLoad
-extension ProductModulePresenter {
-    func transactionsViewDidLoad() {
+    
+    func transactionsLoad() {
         view?.startLoader()
         service.fetchTransactions { [weak self] result in
             guard let self = self else { return }
             self.view?.stopLoader()
             switch result {
             case .success(let dtoTransactions):
-                transactions = dtoTransactions.compactMap { DefaultMapper().transactionMapper(dto: $0) }
-                groupedTransactions = groupTransactions(transactions)
+                let mapper = DefaultMapper()
+                let preparedTransactionData = dtoTransactions.compactMap { mapper.transactionMapper(dto: $0) }
+                addTransactionsToOperation(preparedTransactionData)
                 updateUI()
             case .failure(let error):
                 self.view?.showError()
@@ -62,23 +56,31 @@ extension ProductModulePresenter {
 // MARK: - Extension private
 private extension ProductModulePresenter {
     func updateUI() {
-        guard !groupedTransactions.isEmpty else {
+        guard !operationModel.isEmpty else {
             view?.showEmpty()
             return
         }
-        let items: [ProductModuleViewCell.Model] = groupedTransactions.map {
-            .init(sku: $0.sku, transactionCount: "\($0.count) transactions >")
+        let items: [ProductModuleViewCell.Model] = operationModel.map { operation in
+                .init(sku: operation.sku, transactionCount: "\(operation.count) transactions >")
         }
         let viewModel = ProductModuleView.Model(items: items)
         view?.update(model: viewModel)
     }
-    
-    func groupTransactions(_ transactions: [TransactionModel]) -> [OperationModel] {
-        let grouped = transactions.reduce(into: [String: Int]()) { result, transaction in
-            result[transaction.sku, default: 0] += 1
+
+    func addTransactionsToOperation(_ newTransactions: [TransactionModel]) {
+        for transaction in newTransactions {
+            if let index = operationModel.firstIndex(where: { $0.sku == transaction.sku }) {
+                operationModel[index].transactionModel.append(transaction)
+            } else {
+                let transactionsForSKU = newTransactions.filter { $0.sku == transaction.sku }
+                
+                let gruped = transactionsForSKU.reduce(into: [String: Int]()) { result, transaction in
+                    result[transaction.sku, default: 0] += 1
+                }
+                let result = gruped.map { OperationModel(sku: transaction.sku, count: $0.value, transactionModel: transactionsForSKU) }
+                operationModel.append(contentsOf: result)
+            }
         }
-        let result = grouped.map { OperationModel(sku: $0.key, count: $0.value) }
-        return result
     }
 }
 

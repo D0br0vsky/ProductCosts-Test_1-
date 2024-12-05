@@ -2,13 +2,13 @@ import UIKit
 
 final class TransactionModuleFactory {
     struct Context {
-        let transaction: TransactionModel
+        let operationModel: OperationModel
     }
     
     func make(context: Context) -> UIViewController {
         let dataLoader = DataLoader()
         let service = DataService(loadData: dataLoader)
-        let presenter = TransactionModulePresenter(transaction: context.transaction, service: service)
+        let presenter = TransactionModulePresenter(operationModel: context.operationModel, service: service)
         let vc = TransactionModuleController(presenter: presenter)
         presenter.view = vc
         return vc

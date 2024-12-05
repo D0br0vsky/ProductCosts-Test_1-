@@ -29,7 +29,7 @@ final class TransactionModuleController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = presenter.transaction.sku
+        title = presenter.tittle
         navigationController?.navigationBar.prefersLargeTitles = true
         presenter.viewDidLoad()
     }

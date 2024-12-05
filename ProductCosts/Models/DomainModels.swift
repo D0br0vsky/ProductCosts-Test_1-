@@ -1,11 +1,8 @@
 
 struct OperationModel {
-    var sku: String
-    var count: Int
-}
-
-struct convertСurrencyModel {
-    
+    let sku: String
+    let count: Int
+    var transactionModel: [TransactionModel]
 }
 
 struct TransactionModel: Decodable {
@@ -19,3 +16,4 @@ struct RateModel: Decodable {
     let rate: Double
     let to: String
 }
+
