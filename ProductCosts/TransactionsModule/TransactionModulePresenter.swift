@@ -36,7 +36,7 @@ extension TransactionModulePresenter {
                 let ratesNewValues = dtoRates.compactMap { DefaultMapper().rateMapper(dto: $0) }
                 convertingReplacingValues(operationModel, ratesNewValues)
                 updateUI()
-            case .failure(let error):
+            case .failure(_):
                 self.view?.showError()
             }
         }

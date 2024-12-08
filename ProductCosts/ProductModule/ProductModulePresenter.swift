@@ -43,7 +43,7 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
                 let preparedTransactionData = dtoTransactions.compactMap { mapper.transactionMapper(dto: $0) }
                 addTransactionsToOperation(preparedTransactionData)
                 updateUI()
-            case .failure(let error):
+            case .failure(_):
                 self.view?.showError()
             }
         }
