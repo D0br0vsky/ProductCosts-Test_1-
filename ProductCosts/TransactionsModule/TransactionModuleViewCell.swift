@@ -1,3 +1,4 @@
+
 import UIKit
 
 final class TransactionModuleViewCell: UITableViewCell {
@@ -13,7 +14,7 @@ final class TransactionModuleViewCell: UITableViewCell {
         let label = UILabel()
         label.numberOfLines = 1
         label.textColor = .black
-        label.font = UIFont.boldSystemFont(ofSize: 16)
+        label.font = UIFont.boldSystemFont(ofSize: 18)
         label.textAlignment = .left
         return label
     }()
@@ -29,15 +30,16 @@ final class TransactionModuleViewCell: UITableViewCell {
     
     private lazy var stack: UIStackView = {
         let view = UIStackView()
-        view.axis = .vertical
+        view.axis = .horizontal
         view.distribution = .fill
-        view.spacing = 2.0
+        view.alignment = .center
+        view.spacing = 8.0
         return view
     }()
     
     private lazy var line: UIView = {
         let view = UIView()
-        
+        view.backgroundColor = .lightGray
         return view
     }()
     
@@ -85,6 +87,7 @@ private extension TransactionModuleViewCell {
             stack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            stack.bottomAnchor.constraint(equalTo: line.topAnchor, constant: -8),
             
             line.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 8),
             line.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),

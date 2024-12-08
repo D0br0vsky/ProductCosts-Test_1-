@@ -12,9 +12,7 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
     
     private let service: DataServiceProtocol
     private let router: ProductModuleRouter
-    
     private var operationModel: [OperationModel] = []
-    
     
     // MARK: - Init
     init(service: DataServiceProtocol, router: ProductModuleRouter) {

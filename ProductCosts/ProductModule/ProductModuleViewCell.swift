@@ -1,6 +1,6 @@
 
 import UIKit
-
+ 
 final class ProductModuleViewCell: UITableViewCell {
     
     static let id = "ProductModuleViewCell"
@@ -14,7 +14,7 @@ final class ProductModuleViewCell: UITableViewCell {
         let label = UILabel()
         label.numberOfLines = 1
         label.textColor = .black
-        label.font = UIFont.boldSystemFont(ofSize: 16)
+        label.font = UIFont.boldSystemFont(ofSize: 18)
         label.textAlignment = .left
         return label
     }()
@@ -23,16 +23,17 @@ final class ProductModuleViewCell: UITableViewCell {
         let label = UILabel()
         label.numberOfLines = 1
         label.textColor = .black
-        label.font = UIFont.boldSystemFont(ofSize: 12)
+        label.font = UIFont.boldSystemFont(ofSize: 14)
         label.textAlignment = .right
         return label
     }()
     
     private lazy var stack: UIStackView = {
         let view = UIStackView()
-        view.axis = .vertical
+        view.axis = .horizontal
         view.distribution = .fill
-        view.spacing = 2.0
+        view.alignment = .center
+        view.spacing = 8.0
         return view
     }()
     
@@ -72,8 +73,8 @@ private extension ProductModuleViewCell {
     }
     
     func setupSubview() {
-        stack.addArrangedSubview(numLabel)
         stack.addArrangedSubview(skuLabel)
+        stack.addArrangedSubview(numLabel)
         contentView.addSubview(stack)
         contentView.addSubview(line)
     }
@@ -87,6 +88,7 @@ private extension ProductModuleViewCell {
             stack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            stack.bottomAnchor.constraint(equalTo: line.topAnchor, constant: -8),
             
             line.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 8),
             line.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),

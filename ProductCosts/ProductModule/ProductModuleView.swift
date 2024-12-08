@@ -1,5 +1,5 @@
-import UIKit
 
+import UIKit
 
 final class ProductModuleView: UIView {
     

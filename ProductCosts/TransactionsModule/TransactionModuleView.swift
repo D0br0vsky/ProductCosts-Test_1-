@@ -1,3 +1,4 @@
+
 import UIKit
 
 final class TransactionModuleView: UIView {
@@ -20,7 +21,6 @@ final class TransactionModuleView: UIView {
         view.separatorStyle = .none
         view.showsVerticalScrollIndicator = false
         view.dataSource = self
-        view.delegate = self
         return view
     }()
     
@@ -49,7 +49,9 @@ final class TransactionModuleView: UIView {
     func update(model: Model) {
         self.model = model
         totalCount.text = model.totalCount
-        tableView.reloadData()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
     
     func showError() {
@@ -71,6 +73,10 @@ final class TransactionModuleView: UIView {
 
 // MARK: - UITableViewDataSource
 extension TransactionModuleView: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        1
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         model?.items.count ?? 0
     }
@@ -86,18 +92,12 @@ extension TransactionModuleView: UITableViewDataSource {
     }
 }
 
-// MARK: - UITableViewDelegate
-extension TransactionModuleView: UITableViewDelegate {
-    // исправить
-}
-
-
 // MARK: - ExtensionConstrains
 extension TransactionModuleView {
     func commonInit() {
         backgroundColor = .systemBackground
-        setupConstraints()
         setupSubviews()
+        setupConstraints()
     }
     
     func setupSubviews() {
@@ -106,14 +106,13 @@ extension TransactionModuleView {
     }
     
     func setupConstraints() {
-        
-        totalCount.translatesAutoresizingMaskIntoConstraints = false
-        tableView.translatesAutoresizingMaskIntoConstraints = false
+       totalCount.translatesAutoresizingMaskIntoConstraints = false
+       tableView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             totalCount.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             totalCount.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            totalCount.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 10),
+            totalCount.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             
             tableView.topAnchor.constraint(equalTo: totalCount.bottomAnchor, constant: 10),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
@@ -122,4 +121,3 @@ extension TransactionModuleView {
         ])
     }
 }
-

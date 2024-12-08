@@ -11,6 +11,13 @@ struct TransactionModel: Decodable {
     let sku: String
 }
 
+struct СonversionModel {
+    let convertGBP: String
+    var totalCount: String
+    let amountAndCurrency: String
+    var rateModel: [RateModel]
+}
+
 struct RateModel: Decodable {
     let from: String
     let rate: Double
