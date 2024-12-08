@@ -93,7 +93,7 @@ private extension TransactionModulePresenter {
             let amountAndCurrency = "\(currencySymbol)\(String(format: "%.2f", transaction.amount))"
             let conversionItem = СonversionModel(
                 convertGBP: "£ \(String(format: "%.2f", convertedAmount))",
-                totalCount: "\(totalConvertedAmounts.reduce(0, +))",
+                totalCount: "\(convertedAmount)",
                 amountAndCurrency: amountAndCurrency,
                 rateModel: ratesNewValues
             )
