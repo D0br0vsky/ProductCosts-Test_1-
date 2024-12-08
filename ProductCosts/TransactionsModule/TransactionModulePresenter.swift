@@ -35,8 +35,6 @@ extension TransactionModulePresenter {
             case .success(let dtoRates):
                 let ratesNewValues = dtoRates.compactMap { DefaultMapper().rateMapper(dto: $0) }
                 convertingReplacingValues(operationModel, ratesNewValues)
-                
-                
                 updateUI()
             case .failure(let error):
                 self.view?.showError()
@@ -55,7 +53,12 @@ private extension TransactionModulePresenter {
         let items: [TransactionModuleViewCell.Model] = conversionModel.map { value in
                 .init(amountAndCurrency: value.amountAndCurrency, amountConvertGBP: value.convertGBP)
         }
-        let viewModel = TransactionModuleView.Model(items: items, totalCount: "Test")
+        
+        let totalCount = conversionModel
+                .compactMap { Double($0.totalCount) }
+                .reduce(0, +)
+        let formattedTotalCount = "£ \(String(format: "%.2f", totalCount)) total"
+        let viewModel = TransactionModuleView.Model(items: items, totalCount: formattedTotalCount)
         view?.update(model: viewModel)
     }
     
@@ -77,8 +80,8 @@ private extension TransactionModulePresenter {
             let currencySymbol = characterEncoding[transaction.currency] ?? transaction.currency
             let amountAndCurrency = "\(currencySymbol)\(String(format: "%.2f", transaction.amount))"
             let conversionItem = СonversionModel(
-                convertGBP: "£\(String(format: "%.2f", convertedAmount))",
-                totalCount: "\(totalConvertedAmounts.reduce(0, +)) transactions",
+                convertGBP: "£ \(String(format: "%.2f", convertedAmount))",
+                totalCount: "\(totalConvertedAmounts.reduce(0, +))",
                 amountAndCurrency: amountAndCurrency,
                 rateModel: ratesNewValues
             )
