@@ -55,25 +55,37 @@ private extension TransactionModulePresenter {
         }
         
         let totalCount = conversionModel
-                .compactMap { Double($0.totalCount) }
-                .reduce(0, +)
-        let formattedTotalCount = "£ \(String(format: "%.2f", totalCount)) total"
+            .compactMap { Double($0.totalCount) }
+            .reduce(0, +)
+        let formattedTotalCount = "Total: £\(String(format: "%.2f", totalCount))"
         let viewModel = TransactionModuleView.Model(items: items, totalCount: formattedTotalCount)
         view?.update(model: viewModel)
     }
     
     func convertingReplacingValues(_ operationModel: OperationModel, _ ratesNewValues: [RateModel]) {
-        
         let characterEncoding: [String: String] = ["USD":"$", "GBP":"£", "CAD":"CA$", "AUD":"A$"]
         var totalConvertedAmounts: [Double] = []
         
         for transaction in operationModel.transactionModel {
             var convertedAmount: Double = 0.0
             
-            if let rate = ratesNewValues.first(where: { $0.from == transaction.currency }) {
-                convertedAmount = transaction.amount * rate.rate
-            } else {
+            if transaction.currency == "GBP" {
                 convertedAmount = transaction.amount
+            } else if let rate = ratesNewValues.first(where: { $0.from == transaction.currency }) {
+                let usdRate = ratesNewValues.first(where: { $0.from == "USD" })?.rate ?? 1.0
+                
+                switch transaction.currency {
+                case "GBP":
+                    convertedAmount = transaction.amount
+                case "CAD":
+                    convertedAmount = transaction.amount * rate.rate * usdRate
+                    print("test")
+                case "USD", "AUD":
+                    convertedAmount = transaction.amount * rate.rate
+                    print("test")
+                default:
+                    print("Unsupported currency")
+                }
             }
             totalConvertedAmounts.append(convertedAmount)
             
