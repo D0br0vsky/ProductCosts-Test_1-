@@ -1,13 +1,13 @@
 
 final class DefaultMapper {
-    func transactionMapper(dto: TransactionDTO) -> TransactionModel? {
+    func transactionConverter(dto: TransactionDTO) -> TransactionModel? {
         guard let amount = Double(dto.amount) else {
             return nil
         }
         return TransactionModel(amount: amount, currency: dto.currency, sku: dto.sku)
     }
     
-    func rateMapper(dto: RateDTO) -> RateModel? {
+    func rateConverter(dto: RateDTO) -> RateModel? {
         guard let rate = Double(dto.rate) else {
             return nil
         }

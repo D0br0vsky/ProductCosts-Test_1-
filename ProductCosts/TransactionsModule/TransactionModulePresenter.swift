@@ -33,7 +33,7 @@ extension TransactionModulePresenter {
             self.view?.stopLoader()
             switch result {
             case .success(let dtoRates):
-                let ratesNewValues = dtoRates.compactMap { DefaultMapper().rateMapper(dto: $0) }
+                let ratesNewValues = dtoRates.compactMap { DefaultMapper().rateConverter(dto: $0) }
                 convertingReplacingValues(operationModel, ratesNewValues)
                 updateUI()
             case .failure(_):
@@ -79,10 +79,8 @@ private extension TransactionModulePresenter {
                     convertedAmount = transaction.amount
                 case "CAD":
                     convertedAmount = transaction.amount * rate.rate * usdRate
-                    print("test")
                 case "USD", "AUD":
                     convertedAmount = transaction.amount * rate.rate
-                    print("test")
                 default:
                     print("Unsupported currency")
                 }

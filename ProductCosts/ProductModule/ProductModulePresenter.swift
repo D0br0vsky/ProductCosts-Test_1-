@@ -40,7 +40,7 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
             switch result {
             case .success(let dtoTransactions):
                 let mapper = DefaultMapper()
-                let preparedTransactionData = dtoTransactions.compactMap { mapper.transactionMapper(dto: $0) }
+                let preparedTransactionData = dtoTransactions.compactMap { mapper.transactionConverter(dto: $0) }
                 addTransactionsToOperation(preparedTransactionData)
                 updateUI()
             case .failure(_):
@@ -64,21 +64,32 @@ private extension ProductModulePresenter {
         let viewModel = ProductModuleView.Model(items: items)
         view?.update(model: viewModel)
     }
-
+    
     func addTransactionsToOperation(_ newTransactions: [TransactionModel]) {
+        
+        var transactionsBySKU: [String: [TransactionModel]] = [:]
         for transaction in newTransactions {
-            if let index = operationModel.firstIndex(where: { $0.sku == transaction.sku }) {
-                operationModel[index].transactionModel.append(transaction)
+            transactionsBySKU[transaction.sku, default: []].append(transaction)
+        }
+        
+        var operationModelIndex: [String: Int] = [:]
+        for (index, operation) in operationModel.enumerated() {
+            operationModelIndex[operation.sku] = index
+        }
+        
+        
+        for (sku, transactions) in transactionsBySKU {
+            if let index = operationModelIndex[sku] {
+                operationModel[index].transactionModel.append(contentsOf: transactions)
             } else {
-                let transactionsForSKU = newTransactions.filter { $0.sku == transaction.sku }
-                
-                let gruped = transactionsForSKU.reduce(into: [String: Int]()) { result, transaction in
+                let gruped = transactions.reduce(into: [String: Int]()) { result, transaction in
                     result[transaction.sku, default: 0] += 1
                 }
-                let result = gruped.map { OperationModel(sku: transaction.sku, count: $0.value, transactionModel: transactionsForSKU) }
+                let result = gruped.map { OperationModel(sku: sku, count: $0.value, transactionModel: transactions) }
                 operationModel.append(contentsOf: result)
             }
         }
     }
 }
+
 
