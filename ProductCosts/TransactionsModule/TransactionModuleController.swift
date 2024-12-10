@@ -35,7 +35,6 @@ final class TransactionModuleController: UIViewController {
     }
 }
 
-
 extension TransactionModuleController: TransactionModuleViewProtocol {
     func update(model: TransactionModuleView.Model) {
         customView.update(model: model)

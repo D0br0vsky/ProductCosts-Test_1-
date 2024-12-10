@@ -2,7 +2,6 @@
 import UIKit
  
 final class ProductModuleViewCell: UITableViewCell {
-    
     static let id = "ProductModuleViewCell"
     
     struct Model {
@@ -80,7 +79,6 @@ private extension ProductModuleViewCell {
     }
     
     func setupConstraints() {
-        
         stack.translatesAutoresizingMaskIntoConstraints = false
         line.translatesAutoresizingMaskIntoConstraints = false
         

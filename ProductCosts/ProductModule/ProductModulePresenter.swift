@@ -66,7 +66,6 @@ private extension ProductModulePresenter {
     }
     
     func addTransactionsToOperation(_ newTransactions: [TransactionModel]) {
-        
         var transactionsBySKU: [String: [TransactionModel]] = [:]
         for transaction in newTransactions {
             transactionsBySKU[transaction.sku, default: []].append(transaction)
@@ -76,7 +75,6 @@ private extension ProductModulePresenter {
         for (index, operation) in operationModel.enumerated() {
             operationModelIndex[operation.sku] = index
         }
-        
         
         for (sku, transactions) in transactionsBySKU {
             if let index = operationModelIndex[sku] {

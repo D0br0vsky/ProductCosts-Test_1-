@@ -9,7 +9,6 @@ protocol ProductModuleViewProtocol: AnyObject {
 }
 
 final class ProductModuleController: UIViewController {
-    
     private lazy var customView = ProductModuleView(presenter: presenter)
     private let presenter: ProductModulePresenter
     

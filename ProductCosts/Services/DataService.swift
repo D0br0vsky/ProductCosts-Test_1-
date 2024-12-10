@@ -13,11 +13,9 @@ final class DataService: DataServiceProtocol {
         self.loadData = loadData
     }
     
-    
     func fetchTransactions(completion: @escaping (Result<[TransactionDTO], Error>) -> Void) {
         loadData.fetchData(from: "transactions", as: [TransactionDTO].self, completion: completion)
     }
-    
     
     func fetchRates(completion: @escaping (Result<[RateDTO], Error>) -> Void) {
         loadData.fetchData(from: "rates", as: [RateDTO].self, completion: completion)

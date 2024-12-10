@@ -2,7 +2,6 @@
 import UIKit
 
 final class TransactionModuleView: UIView {
-    
     typealias Item = TransactionModuleViewCell.Model
     
     struct Model {

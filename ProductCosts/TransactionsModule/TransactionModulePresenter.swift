@@ -5,13 +5,10 @@ protocol TransactionModulePresenterProtocol: AnyObject {
 }
 
 final class TransactionModulePresenter: TransactionModulePresenterProtocol {
-    
     private let service: DataServiceProtocol
     private let operationModel: OperationModel
     private var conversionModel: [СonversionModel] = []
-    
     var tittle: String { "\(operationModel.sku)" }
-    
     weak var view: TransactionModuleViewProtocol?
     
     init(operationModel: OperationModel, service: DataServiceProtocol) {
@@ -65,28 +62,33 @@ private extension TransactionModulePresenter {
     func convertingReplacingValues(_ operationModel: OperationModel, _ ratesNewValues: [RateModel]) {
         let characterEncoding: [String: String] = ["USD":"$", "GBP":"£", "CAD":"CA$", "AUD":"A$"]
         var totalConvertedAmounts: [Double] = []
+        let ratesDictionary: [String: Double] = ratesNewValues.reduce(into: [:]) { result, rate in
+            guard rate.to != "CAD" else { return }
+            result[rate.from] = rate.rate
+        }
+        let usdRate = ratesDictionary["USD"] ?? 1.0
         
         for transaction in operationModel.transactionModel {
             var convertedAmount: Double = 0.0
             
             if transaction.currency == "GBP" {
                 convertedAmount = transaction.amount
-            } else if let rate = ratesNewValues.first(where: { $0.from == transaction.currency }) {
-                let usdRate = ratesNewValues.first(where: { $0.from == "USD" })?.rate ?? 1.0
-                
+            } else if let rate = ratesDictionary[transaction.currency] {
                 switch transaction.currency {
                 case "GBP":
                     convertedAmount = transaction.amount
                 case "CAD":
-                    convertedAmount = transaction.amount * rate.rate * usdRate
-                case "USD", "AUD":
-                    convertedAmount = transaction.amount * rate.rate
+                    convertedAmount = transaction.amount * rate * usdRate
+                case "AUD":
+                    convertedAmount = transaction.amount * rate
+                case "USD":
+                    convertedAmount = transaction.amount * usdRate
                 default:
                     print("Unsupported currency")
                 }
             }
-            totalConvertedAmounts.append(convertedAmount)
             
+            totalConvertedAmounts.append(convertedAmount)
             let currencySymbol = characterEncoding[transaction.currency] ?? transaction.currency
             let amountAndCurrency = "\(currencySymbol)\(String(format: "%.2f", transaction.amount))"
             let conversionItem = СonversionModel(

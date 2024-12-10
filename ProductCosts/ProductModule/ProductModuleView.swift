@@ -2,7 +2,6 @@
 import UIKit
 
 final class ProductModuleView: UIView {
-    
     typealias Item = ProductModuleViewCell.Model
     
     struct Model {
@@ -59,7 +58,6 @@ final class ProductModuleView: UIView {
     }
 }
 
-
 // MARK: - UITableViewDataSource
 extension ProductModuleView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -78,14 +76,12 @@ extension ProductModuleView: UITableViewDataSource {
     }
 }
 
-
 // MARK: - UITableViewDelegate
 extension ProductModuleView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         presenter.tapRow(index: indexPath.row)
     }
 }
-
 
 // MARK: - ConstraintsSubviews
 private extension ProductModuleView {
