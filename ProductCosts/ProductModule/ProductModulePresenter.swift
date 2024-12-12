@@ -14,14 +14,11 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
     private let router: ProductModuleRouter
     private var operationModel: [OperationModel] = []
     
-    // MARK: - Init
     init(service: DataServiceProtocol, router: ProductModuleRouter) {
         self.service = service
         self.router = router
     }
     
-    
-    // MARK: - Protocol Methods
     func viewDidLoad() {
         transactionsLoad()
     }
