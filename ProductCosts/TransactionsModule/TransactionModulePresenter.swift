@@ -1,3 +1,4 @@
+import Foundation
 
 protocol TransactionModulePresenterProtocol: AnyObject {
     var tittle: String { get }
@@ -7,16 +8,23 @@ protocol TransactionModulePresenterProtocol: AnyObject {
 final class TransactionModulePresenter: TransactionModulePresenterProtocol {
     private let service: DataServiceProtocol
     private let operationModel: OperationModel
+    private var dataStorage: DataStorageProtocol
     private var conversionModel: [СonversionModel] = []
-    var tittle: String { "\(operationModel.sku)" }
-    weak var view: TransactionModuleViewProtocol?
     
-    init(operationModel: OperationModel, service: DataServiceProtocol) {
+    //
+    private var dataRateConvertor: DataRateConvertorProtocol
+    //
+    
+    weak var view: TransactionModuleViewProtocol?
+    var tittle: String { "\(operationModel.sku)" }
+    
+    init(operationModel: OperationModel, service: DataServiceProtocol, dataStorage: DataStorageProtocol, dataRateConvertor: DataRateConvertorProtocol) {
         self.service = service
         self.operationModel = operationModel
+        self.dataStorage = dataStorage
+        self.dataRateConvertor = dataRateConvertor
     }
     
-    // MARK: - Protocol Methods
     func viewDidLoad() {
         ratesLoad()
     }
@@ -25,18 +33,10 @@ final class TransactionModulePresenter: TransactionModulePresenterProtocol {
 extension TransactionModulePresenter {
     func ratesLoad() {
         view?.startLoader()
-        service.fetchRates { [weak self] result in
-            guard let self = self else { return }
-            self.view?.stopLoader()
-            switch result {
-            case .success(let dtoRates):
-                let ratesNewValues = dtoRates.compactMap { DefaultMapper().rateConverter(dto: $0) }
-                convertingReplacingValues(operationModel, ratesNewValues)
-                updateUI()
-            case .failure(_):
-                self.view?.showError()
-            }
-        }
+        let ratesValues = dataStorage.getRates()
+        convertingReplacingValues(operationModel, ratesValues)
+        updateUI()
+        view?.stopLoader()
     }
 }
 
@@ -60,44 +60,29 @@ private extension TransactionModulePresenter {
     }
     
     func convertingReplacingValues(_ operationModel: OperationModel, _ ratesNewValues: [RateModel]) {
-        let characterEncoding: [String: String] = ["USD":"$", "GBP":"£", "CAD":"CA$", "AUD":"A$"]
-        var totalConvertedAmounts: [Double] = []
-        let ratesDictionary: [String: Double] = ratesNewValues.reduce(into: [:]) { result, rate in
-            guard rate.to != "CAD" else { return }
+        
+        let rateDictionary: [String: Double] = ratesNewValues.reduce(into: [:]) { result, rate in
             result[rate.from] = rate.rate
         }
-        let usdRate = ratesDictionary["USD"] ?? 1.0
         
         for transaction in operationModel.transactionModel {
             var convertedAmount: Double = 0.0
-            
             if transaction.currency == "GBP" {
                 convertedAmount = transaction.amount
-            } else if let rate = ratesDictionary[transaction.currency] {
-                switch transaction.currency {
-                case "GBP":
-                    convertedAmount = transaction.amount
-                case "CAD":
-                    convertedAmount = transaction.amount * rate * usdRate
-                case "AUD":
+            } else if let rate = rateDictionary[transaction.currency] {
+                if transaction.currency != "USD" {
                     convertedAmount = transaction.amount * rate
-                case "USD":
-                    convertedAmount = transaction.amount * usdRate
-                default:
-                    print("Unsupported currency")
                 }
             }
             
-            totalConvertedAmounts.append(convertedAmount)
-            let currencySymbol = characterEncoding[transaction.currency] ?? transaction.currency
-            let amountAndCurrency = "\(currencySymbol)\(String(format: "%.2f", transaction.amount))"
+            let amountAndCurrency = dataRateConvertor.currencyFormatting(transaction.amount, transaction.currency)
             let conversionItem = СonversionModel(
                 convertGBP: "£ \(String(format: "%.2f", convertedAmount))",
                 totalCount: "\(convertedAmount)",
-                amountAndCurrency: amountAndCurrency,
-                rateModel: ratesNewValues
+                amountAndCurrency: amountAndCurrency
             )
             conversionModel.append(conversionItem)
         }
     }
 }
+

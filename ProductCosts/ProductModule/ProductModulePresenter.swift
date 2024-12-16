@@ -14,9 +14,14 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
     private let router: ProductModuleRouter
     private var operationModel: [OperationModel] = []
     
-    init(service: DataServiceProtocol, router: ProductModuleRouter) {
+    
+    private var dataStorage: DataStorageProtocol
+    
+    
+    init(service: DataServiceProtocol, router: ProductModuleRouter, dataStorage: DataStorageProtocol) {
         self.service = service
         self.router = router
+        self.dataStorage = dataStorage
     }
     
     func viewDidLoad() {
@@ -47,7 +52,6 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
     }
 }
 
-
 // MARK: - Extension private
 private extension ProductModulePresenter {
     func updateUI() {
@@ -56,7 +60,7 @@ private extension ProductModulePresenter {
             return
         }
         let items: [ProductModuleViewCell.Model] = operationModel.map { operation in
-                .init(sku: operation.sku, transactionCount: "\(operation.count) transactions >")
+                .init(sku: operation.sku, transactionCount: "\(operation.transactionModel.count) transactions >")
         }
         let viewModel = ProductModuleView.Model(items: items)
         view?.update(model: viewModel)
@@ -68,23 +72,9 @@ private extension ProductModulePresenter {
             transactionsBySKU[transaction.sku, default: []].append(transaction)
         }
         
-        var operationModelIndex: [String: Int] = [:]
-        for (index, operation) in operationModel.enumerated() {
-            operationModelIndex[operation.sku] = index
-        }
-        
         for (sku, transactions) in transactionsBySKU {
-            if let index = operationModelIndex[sku] {
-                operationModel[index].transactionModel.append(contentsOf: transactions)
-            } else {
-                let gruped = transactions.reduce(into: [String: Int]()) { result, transaction in
-                    result[transaction.sku, default: 0] += 1
-                }
-                let result = gruped.map { OperationModel(sku: sku, count: $0.value, transactionModel: transactions) }
-                operationModel.append(contentsOf: result)
-            }
+            let item = OperationModel(sku: sku, transactionModel: transactions)
+            operationModel.append(item)
         }
     }
 }
-
-
