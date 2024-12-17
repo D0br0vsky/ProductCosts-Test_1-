@@ -6,10 +6,16 @@ protocol DataRateConvertorProtocol {
 }
 
 class DataRateConvertor: DataRateConvertorProtocol {
-    func currencyFormatting(_ value: Double,_ currencyCode: String) -> String {
-        let fomatter = NumberFormatter()
-        fomatter.numberStyle = .currency
-        fomatter.currencyCode = currencyCode
-        return fomatter.string(from: NSNumber(value: value)) ?? "no data"
+    func currencyFormatting(_ value: Double, _ currencyCode: String) -> String {
+        let locale = NSLocale(localeIdentifier: "en_US")
+        let currencySymbol = locale.displayName(forKey: .currencySymbol, value: currencyCode) ?? currencyCode
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.currencyCode = currencyCode
+        formatter.currencySymbol = ""
+        formatter.positivePrefix = "\(currencySymbol) "
+        formatter.negativePrefix = "-\(currencySymbol) "
+        
+        return formatter.string(from: NSNumber(value: value)) ?? "no data"
     }
 }
