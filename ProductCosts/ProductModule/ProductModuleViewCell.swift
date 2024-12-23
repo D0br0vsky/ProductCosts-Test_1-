@@ -44,12 +44,10 @@ final class ProductModuleViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-    
         contentView.backgroundColor = .systemBackground
         backgroundColor = .systemBackground
         selectionStyle = .none
         tintColor = .systemGray
-        
         commonInit()
     }
     

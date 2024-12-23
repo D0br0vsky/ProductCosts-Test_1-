@@ -1,10 +1,10 @@
 import UIKit
 
 final class TransactionModuleFactory {
-    private let dataStorage: DataStorageProtocol
+    private let ratesDataStorage: RatesDataStorageProtocol
     
-    init(dataStorage: DataStorageProtocol) {
-        self.dataStorage = dataStorage
+    init(ratesDataStorage: RatesDataStorageProtocol) {
+        self.ratesDataStorage = ratesDataStorage
     }
     
     struct Context {
@@ -14,8 +14,8 @@ final class TransactionModuleFactory {
     func make(context: Context) -> UIViewController {
         let dataLoader = DataLoader()
         let service = DataService(loadData: dataLoader)
-        let dataRateConvertor = DataRateConvertor()
-        let presenter = TransactionModulePresenter(operationModel: context.operationModel, service: service, dataStorage: dataStorage, dataRateConvertor: dataRateConvertor)
+        let currencyFormatter = CurrencyFormatter()
+        let presenter = TransactionModulePresenter(operationModel: context.operationModel, service: service, ratesDataStorage: ratesDataStorage, dataRateConvertor: currencyFormatter)
         let vc = TransactionModuleController(presenter: presenter)
         presenter.view = vc
         return vc

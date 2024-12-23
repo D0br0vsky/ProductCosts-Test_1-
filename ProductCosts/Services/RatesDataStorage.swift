@@ -1,13 +1,13 @@
 
 import Foundation
 
-protocol DataStorageProtocol {
+protocol RatesDataStorageProtocol {
     func getRates() -> [RateModel]
     func setRates(_ cachedData: [RateModel])
     func ratesLoad(completion: @escaping () -> Void)
 }
 
-final class DataStorage: DataStorageProtocol {
+final class RatesDataStorage: RatesDataStorageProtocol {
     private let service: DataServiceProtocol
     private var cachedData: [RateModel] = []
     

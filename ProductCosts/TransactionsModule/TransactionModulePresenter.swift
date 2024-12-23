@@ -8,21 +8,18 @@ protocol TransactionModulePresenterProtocol: AnyObject {
 final class TransactionModulePresenter: TransactionModulePresenterProtocol {
     private let service: DataServiceProtocol
     private let operationModel: OperationModel
-    private var dataStorage: DataStorageProtocol
+    private var ratesDataStorage: RatesDataStorageProtocol
     private var conversionModel: [СonversionModel] = []
-    
-    //
-    private var dataRateConvertor: DataRateConvertorProtocol
-    //
+    private var currencyFormatter: CurrencyFormattingServiceProtocol
     
     weak var view: TransactionModuleViewProtocol?
     var tittle: String { "\(operationModel.sku)" }
     
-    init(operationModel: OperationModel, service: DataServiceProtocol, dataStorage: DataStorageProtocol, dataRateConvertor: DataRateConvertorProtocol) {
+    init(operationModel: OperationModel, service: DataServiceProtocol, ratesDataStorage: RatesDataStorageProtocol, dataRateConvertor: CurrencyFormattingServiceProtocol) {
         self.service = service
         self.operationModel = operationModel
-        self.dataStorage = dataStorage
-        self.dataRateConvertor = dataRateConvertor
+        self.ratesDataStorage = ratesDataStorage
+        self.currencyFormatter = dataRateConvertor
     }
     
     func viewDidLoad() {
@@ -33,7 +30,7 @@ final class TransactionModulePresenter: TransactionModulePresenterProtocol {
 extension TransactionModulePresenter {
     func ratesLoad() {
         view?.startLoader()
-        let ratesValues = dataStorage.getRates()
+        let ratesValues = ratesDataStorage.getRates()
         convertingReplacingValues(operationModel, ratesValues)
         updateUI()
         view?.stopLoader()
@@ -78,7 +75,8 @@ private extension TransactionModulePresenter {
                 convertedAmount = transaction.amount * rateToUSD * usdToGBP
             }
             
-            let amountAndCurrency = dataRateConvertor.currencyFormatting(transaction.amount, transaction.currency)
+            let amountAndCurrency = currencyFormatter.convertToCurrencyString(transaction.amount, transaction.currency)
+            
             let conversionItem = СonversionModel(
                 convertGBP: "£ \(String(format: "%.2f", convertedAmount))",
                 totalCount: "\(convertedAmount)",

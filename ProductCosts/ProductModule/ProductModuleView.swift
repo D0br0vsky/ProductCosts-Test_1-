@@ -96,7 +96,6 @@ private extension ProductModuleView {
     }
     
     func setupConstraints() {
-        
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
