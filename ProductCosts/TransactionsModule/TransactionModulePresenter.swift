@@ -57,32 +57,10 @@ private extension TransactionModulePresenter {
     }
     
     func convertingReplacingValues(_ operationModel: OperationModel, _ ratesNewValues: [RateModel]) {
-        var graph: [String: [String: Double]] = [:]
-        for rate in ratesNewValues {
-            graph[rate.from, default: [:]][rate.to] = rate.rate
-        }
-
-        for transaction in operationModel.transactionModel {
-            var convertedAmount: Double = 0.0
-            if transaction.currency == "GBP" {
-                convertedAmount = transaction.amount
-            }
-            else if let directRateToGBP = graph[transaction.currency]?["GBP"] {
-                convertedAmount = transaction.amount * directRateToGBP
-            }
-            else if let rateToUSD = graph[transaction.currency]?["USD"],
-                    let usdToGBP = graph["USD"]?["GBP"] {
-                convertedAmount = transaction.amount * rateToUSD * usdToGBP
-            }
-            
-            let amountAndCurrency = currencyFormatter.convertToCurrencyString(transaction.amount, transaction.currency)
-            
-            let conversionItem = СonversionModel(
-                convertGBP: "£ \(String(format: "%.2f", convertedAmount))",
-                totalCount: "\(convertedAmount)",
-                amountAndCurrency: amountAndCurrency
-            )
+        for transactionModel in operationModel.transactionModel {
+            let conversionItem = currencyFormatter.makeConversionModel(transactionModel, ratesNewValues)
             conversionModel.append(conversionItem)
         }
     }
+    
 }
