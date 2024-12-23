@@ -6,12 +6,12 @@ protocol ProductModulePresenterProtocol {
 }
 
 final class ProductModulePresenter: ProductModulePresenterProtocol {
+    var title: String { "Product" }
     weak var view: ProductModuleViewProtocol?
     private let service: DataServiceProtocol
     private let router: ProductModuleRouter
-    private var operationModel: [OperationModel] = []
     private var ratesDataStorage: RatesDataStorageProtocol
-    var title: String { "Product" }
+    private var operationModel: [OperationModel] = []
     
     init(service: DataServiceProtocol, router: ProductModuleRouter, dataStorage: RatesDataStorageProtocol) {
         self.service = service

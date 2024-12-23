@@ -6,14 +6,14 @@ protocol TransactionModulePresenterProtocol: AnyObject {
 }
 
 final class TransactionModulePresenter: TransactionModulePresenterProtocol {
-    private let service: DataServiceProtocol
-    private let operationModel: OperationModel
-    private var ratesDataStorage: RatesDataStorageProtocol
-    private var conversionModel: [СonversionModel] = []
-    private var currencyFormatter: CurrencyFormattingServiceProtocol
-    
-    weak var view: TransactionModuleViewProtocol?
     var tittle: String { "\(operationModel.sku)" }
+    weak var view: TransactionModuleViewProtocol?
+    private let operationModel: OperationModel
+    private let service: DataServiceProtocol
+    private var ratesDataStorage: RatesDataStorageProtocol
+    private var currencyFormatter: CurrencyFormattingServiceProtocol
+    private var conversionModel: [СonversionModel] = []
+    
     
     init(operationModel: OperationModel, service: DataServiceProtocol, ratesDataStorage: RatesDataStorageProtocol, dataRateConvertor: CurrencyFormattingServiceProtocol) {
         self.service = service

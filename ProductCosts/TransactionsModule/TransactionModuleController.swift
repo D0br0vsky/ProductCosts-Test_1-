@@ -9,9 +9,8 @@ protocol TransactionModuleViewProtocol: AnyObject {
 }
 
 final class TransactionModuleController: UIViewController {
-    
-    private lazy var customView = TransactionModuleView(presenter: presenter)
     private let presenter: TransactionModulePresenter
+    private lazy var customView = TransactionModuleView(presenter: presenter)
     
     init(presenter: TransactionModulePresenter) {
         self.presenter = presenter
