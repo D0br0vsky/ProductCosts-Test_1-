@@ -1,7 +1,6 @@
 import UIKit
 
 final class ProductModuleFactory {
-
     private static func makeDataLoader() -> DataLoader {
         return DataLoader()
     }
@@ -29,10 +28,10 @@ final class ProductModuleFactory {
         let factory = TransactionModuleFactory(ratesDataStorage: ratesDataStorage)
         let dataLoader = makeDataLoader()
         let service = makeDataService(dataLoader: dataLoader)
-        let dataStorage = makeRatesDataStorage(service: service)
+        let ratesDataStorage = makeRatesDataStorage(service: service)
         
         let router = ProductModuleRouter(factory: factory)
-        let presenter = ProductModulePresenter(service: service, router: router, dataStorage: dataStorage)
+        let presenter = ProductModulePresenter(service: service, router: router, ratesDataStorage: ratesDataStorage)
         let vc = ProductModuleController(presenter: presenter)
         
         router.setRoot(vc)

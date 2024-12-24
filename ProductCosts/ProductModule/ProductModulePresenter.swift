@@ -13,10 +13,10 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
     private let ratesDataStorage: RatesDataStorageProtocol
     private var operationModel: [OperationModel] = []
     
-    init(service: DataServiceProtocol, router: ProductModuleRouter, dataStorage: RatesDataStorageProtocol) {
+    init(service: DataServiceProtocol, router: ProductModuleRouter, ratesDataStorage: RatesDataStorageProtocol) {
         self.service = service
         self.router = router
-        self.ratesDataStorage = dataStorage
+        self.ratesDataStorage = ratesDataStorage
     }
     
     func viewDidLoad() {
