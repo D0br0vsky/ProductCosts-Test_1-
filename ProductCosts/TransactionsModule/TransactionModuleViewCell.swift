@@ -49,7 +49,6 @@ final class TransactionModuleViewCell: UITableViewCell {
         backgroundColor = .systemBackground
         selectionStyle = .none
         tintColor = .systemGray
-        
         commonInit()
     }
     
@@ -79,7 +78,6 @@ private extension TransactionModuleViewCell {
     }
     
     func setupConstraints() {
-        
         stack.translatesAutoresizingMaskIntoConstraints = false
         line.translatesAutoresizingMaskIntoConstraints = false
         

@@ -8,7 +8,6 @@ protocol CurrencyFormattingServiceProtocol {
 }
 
 class CurrencyFormatter: CurrencyFormattingServiceProtocol {
-    
     private lazy var currencyLocale: NSLocale = NSLocale(localeIdentifier: "en_US")
     private lazy var formatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -27,7 +26,6 @@ class CurrencyFormatter: CurrencyFormattingServiceProtocol {
     
     func convertToGBP(_ amount: Double,_ currency: String,_ rates: [RateModel]) -> Double {
         var graph: [String: [String: Double]] = [:]
-        
         for rate in rates {
             graph[rate.from, default: [:]][rate.to] = rate.rate
         }

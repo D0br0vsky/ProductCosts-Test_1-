@@ -18,7 +18,6 @@ final class ProductModuleRouter: ProductModuleRouterProtocol {
     }
 
     func openModuleTransaction(with operationModel: OperationModel) {
-        
         let context = TransactionModuleFactory.Context(operationModel: operationModel)
         let viewController = factory.make(context: context)
         root?.navigationController?.pushViewController(viewController, animated: true)

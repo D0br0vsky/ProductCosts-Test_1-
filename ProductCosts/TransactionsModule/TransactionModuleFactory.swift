@@ -15,7 +15,7 @@ final class TransactionModuleFactory {
         let dataLoader = DataLoader()
         let service = DataService(loadData: dataLoader)
         let currencyFormatter = CurrencyFormatter()
-        let presenter = TransactionModulePresenter(operationModel: context.operationModel, service: service, ratesDataStorage: ratesDataStorage, dataRateConvertor: currencyFormatter)
+        let presenter = TransactionModulePresenter(operationModel: context.operationModel, service: service, ratesDataStorage: ratesDataStorage, currencyFormatter: currencyFormatter)
         let vc = TransactionModuleController(presenter: presenter)
         presenter.view = vc
         return vc

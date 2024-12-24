@@ -1,25 +1,24 @@
 import Foundation
 
 protocol TransactionModulePresenterProtocol: AnyObject {
-    var tittle: String { get }
+    var title: String { get }
     func viewDidLoad()
 }
 
 final class TransactionModulePresenter: TransactionModulePresenterProtocol {
-    var tittle: String { "\(operationModel.sku)" }
+    var title: String { operationModel.sku }
     weak var view: TransactionModuleViewProtocol?
     private let operationModel: OperationModel
     private let service: DataServiceProtocol
-    private var ratesDataStorage: RatesDataStorageProtocol
-    private var currencyFormatter: CurrencyFormattingServiceProtocol
+    private let ratesDataStorage: RatesDataStorageProtocol
+    private let currencyFormatter: CurrencyFormattingServiceProtocol
     private var conversionModel: [СonversionModel] = []
     
-    
-    init(operationModel: OperationModel, service: DataServiceProtocol, ratesDataStorage: RatesDataStorageProtocol, dataRateConvertor: CurrencyFormattingServiceProtocol) {
+    init(operationModel: OperationModel, service: DataServiceProtocol, ratesDataStorage: RatesDataStorageProtocol, currencyFormatter: CurrencyFormattingServiceProtocol) {
         self.service = service
         self.operationModel = operationModel
         self.ratesDataStorage = ratesDataStorage
-        self.currencyFormatter = dataRateConvertor
+        self.currencyFormatter = currencyFormatter
     }
     
     func viewDidLoad() {
@@ -37,7 +36,7 @@ extension TransactionModulePresenter {
     }
 }
 
-// MARK: - Extension private
+// MARK: - Private Helpers
 private extension TransactionModulePresenter {
     func updateUI() {
         guard !conversionModel.isEmpty else {
@@ -57,10 +56,8 @@ private extension TransactionModulePresenter {
     }
     
     func convertingReplacingValues(_ operationModel: OperationModel, _ ratesNewValues: [RateModel]) {
-        for transactionModel in operationModel.transactionModel {
-            let conversionItem = currencyFormatter.makeConversionModel(transactionModel, ratesNewValues)
-            conversionModel.append(conversionItem)
+        conversionModel = operationModel.transactionModel.map { transactionModel in
+            currencyFormatter.makeConversionModel(transactionModel, ratesNewValues)
         }
     }
-    
 }

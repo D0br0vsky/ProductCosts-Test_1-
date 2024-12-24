@@ -10,7 +10,7 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
     weak var view: ProductModuleViewProtocol?
     private let service: DataServiceProtocol
     private let router: ProductModuleRouter
-    private var ratesDataStorage: RatesDataStorageProtocol
+    private let ratesDataStorage: RatesDataStorageProtocol
     private var operationModel: [OperationModel] = []
     
     init(service: DataServiceProtocol, router: ProductModuleRouter, dataStorage: RatesDataStorageProtocol) {
@@ -47,7 +47,7 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
     }
 }
 
-// MARK: - Extension private
+// MARK: - Private Helpers
 private extension ProductModulePresenter {
     func updateUI() {
         guard !operationModel.isEmpty else {
