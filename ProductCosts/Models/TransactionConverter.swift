@@ -9,7 +9,7 @@ final class TransactionConverter: TransactionConverterProtocol {
     private let currencyConversionGraph: CurrencyConversionGraphProtocol
     private let currencyFormatter: CurrencyFormatterProtocol
     
-    init(currencyConversionGraph: CurrencyConversionGraph, currencyFormatter: CurrencyFormatter) {
+    init(currencyConversionGraph: CurrencyConversionGraphProtocol, currencyFormatter: CurrencyFormatterProtocol) {
         self.currencyConversionGraph = currencyConversionGraph
         self.currencyFormatter = currencyFormatter
     }
