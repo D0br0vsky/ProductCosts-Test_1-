@@ -1,6 +1,7 @@
 import UIKit
 
 final class ProductModuleFactory {
+    
     private static func makeDataLoader() -> DataLoader {
         return DataLoader()
     }

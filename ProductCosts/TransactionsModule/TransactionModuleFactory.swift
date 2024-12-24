@@ -14,8 +14,10 @@ final class TransactionModuleFactory {
     func make(context: Context) -> UIViewController {
         let dataLoader = DataLoader()
         let service = DataService(loadData: dataLoader)
+        let currencyConversionGraph = CurrencyConversionGraph()
         let currencyFormatter = CurrencyFormatter()
-        let presenter = TransactionModulePresenter(operationModel: context.operationModel, service: service, ratesDataStorage: ratesDataStorage, currencyFormatter: currencyFormatter)
+        let transactionConverter = TransactionConverter(currencyConversionGraph: currencyConversionGraph, currencyFormatter: currencyFormatter)
+        let presenter = TransactionModulePresenter(operationModel: context.operationModel, service: service, ratesDataStorage: ratesDataStorage, transactionConverter: transactionConverter)
         let vc = TransactionModuleController(presenter: presenter)
         presenter.view = vc
         return vc

@@ -11,14 +11,15 @@ final class TransactionModulePresenter: TransactionModulePresenterProtocol {
     private let operationModel: OperationModel
     private let service: DataServiceProtocol
     private let ratesDataStorage: RatesDataStorageProtocol
-    private let currencyFormatter: CurrencyFormattingServiceProtocol
+    private let transactionConverter: TransactionConverterProtocol
+    
     private var conversionModel: [СonversionModel] = []
     
-    init(operationModel: OperationModel, service: DataServiceProtocol, ratesDataStorage: RatesDataStorageProtocol, currencyFormatter: CurrencyFormattingServiceProtocol) {
+    init(operationModel: OperationModel, service: DataServiceProtocol, ratesDataStorage: RatesDataStorageProtocol, transactionConverter: TransactionConverterProtocol) {
         self.service = service
         self.operationModel = operationModel
         self.ratesDataStorage = ratesDataStorage
-        self.currencyFormatter = currencyFormatter
+        self.transactionConverter = transactionConverter
     }
     
     func viewDidLoad() {
@@ -57,7 +58,7 @@ private extension TransactionModulePresenter {
     
     func convertingReplacingValues(_ operationModel: OperationModel, _ ratesNewValues: [RateModel]) {
         conversionModel = operationModel.transactionModel.map { transactionModel in
-            currencyFormatter.makeConversionModel(transactionModel, ratesNewValues)
+            transactionConverter.makeConversionModel(transactionModel, ratesNewValues)
         }
     }
 }
