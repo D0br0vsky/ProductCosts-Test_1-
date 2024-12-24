@@ -8,6 +8,7 @@ protocol CurrencyFormattingServiceProtocol {
 }
 
 class CurrencyFormatter: CurrencyFormattingServiceProtocol {
+    private var graph: [String: [String: Double]] = [:]
     private lazy var currencyLocale: NSLocale = NSLocale(localeIdentifier: "en_US")
     private lazy var formatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -25,10 +26,7 @@ class CurrencyFormatter: CurrencyFormattingServiceProtocol {
     }
     
     func convertToGBP(_ amount: Double,_ currency: String,_ rates: [RateModel]) -> Double {
-        var graph: [String: [String: Double]] = [:]
-        for rate in rates {
-            graph[rate.from, default: [:]][rate.to] = rate.rate
-        }
+        buildGraph(from: rates)
         if currency == "GBP" {
             return amount
         } else if let directRateToGBP = graph[currency]?["GBP"] {
@@ -48,5 +46,15 @@ class CurrencyFormatter: CurrencyFormattingServiceProtocol {
             totalCount: "\(convertedAmount)",
             amountAndCurrency: amountAndCurrency
         )
+    }
+}
+
+// MARK: - Private Helpers
+extension CurrencyFormatter {
+    func buildGraph(from rates: [RateModel]) {
+        guard graph.isEmpty else { return }
+        for rate in rates {
+            graph[rate.from, default: [:]][rate.to] = rate.rate
+        }
     }
 }
