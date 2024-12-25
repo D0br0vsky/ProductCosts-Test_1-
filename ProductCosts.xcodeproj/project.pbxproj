@@ -53,11 +53,6 @@
 			path = ProductCostsTests;
 			sourceTree = "<group>";
 		};
-		CED4DA6B2CF2023A00F940A8 /* ProductCostsUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ProductCostsUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,7 +85,6 @@
 			children = (
 				CED4DA4A2CF2023600F940A8 /* ProductCosts */,
 				CED4DA612CF2023A00F940A8 /* ProductCostsTests */,
-				CED4DA6B2CF2023A00F940A8 /* ProductCostsUITests */,
 				CED4DA492CF2023600F940A8 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -165,9 +159,6 @@
 			);
 			dependencies = (
 				CED4DA6A2CF2023A00F940A8 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				CED4DA6B2CF2023A00F940A8 /* ProductCostsUITests */,
 			);
 			name = ProductCostsUITests;
 			packageProductDependencies = (

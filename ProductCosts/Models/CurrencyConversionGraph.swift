@@ -25,7 +25,6 @@ final class CurrencyConversionGraph: CurrencyConversionGraphProtocol {
         }
     
     func convertToGBP(_ amount: Double,_ currency: String,_ rates: [RateModel]) -> Double {
-//        buildGraph(from: rates)
         if currency == "GBP" {
             return amount
         } else if let directRateToGBP = graph[currency]?["GBP"] {
@@ -37,3 +36,4 @@ final class CurrencyConversionGraph: CurrencyConversionGraphProtocol {
         return 0.0
     }
 }
+
