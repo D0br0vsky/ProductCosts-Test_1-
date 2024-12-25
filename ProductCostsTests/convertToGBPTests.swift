@@ -10,37 +10,66 @@ import XCTest
 @testable import ProductCosts
 
 final class convertToGBPTests: XCTestCase {
-
-    func testSuccessfulCurrencyConversion() {
+    
+    func testCurrencyIsAlreadyGBP() {
         let rates = [
-            RateModel(from: "CAD", rate: 0.58, to: "GBP"),
-            RateModel(from: "USD", rate: 0.72, to: "GBP"),
-            RateModel(from: "CAD", rate: 0.80, to: "USD")
+            RateModel(from: "USD", rate: 0.77, to: "GBP")
                 ]
-        
         let currencyConversionGraph = CurrencyConversionGraph(rates: rates)
-        let enteredAmount = 73.21
-        let enteredCurrency = "CAD"
+
+        let enteredAmount = 100.00
+        let enteredCurrency = "GBP"
         
-        let value = currencyConversionGraph.convertToGBP(enteredAmount, enteredCurrency, rates)
+        let result = currencyConversionGraph.convertToGBP(enteredAmount, enteredCurrency, rates)
         
-        XCTAssertEqual(value, 42.4618)
+        XCTAssertEqual(result, 100.0)
     }
     
-    func testCurrencyWithoutConversionRate() {
+    func testDirectConversionToGBP() {
         let rates = [
-            RateModel(from: "CAD", rate: 0.58, to: "GBP"),
-            RateModel(from: "USD", rate: 0.72, to: "GBP"),
-            RateModel(from: "CAD", rate: 0.80, to: "USD")
-                ]
+            RateModel(from: "CAD", rate: 0.7084, to: "GBP")
+        ]
         
         let currencyConversionGraph = CurrencyConversionGraph(rates: rates)
-        let enteredAmount = 73.21
-        let enteredCurrency = "CHF"
+
+        let enteredAmount = 100.00
+        let enteredCurrency = "CAD"
         
-        let value = currencyConversionGraph.convertToGBP(enteredAmount, enteredCurrency, rates)
+        let result = currencyConversionGraph.convertToGBP(enteredAmount, enteredCurrency, rates)
         
-        XCTAssertEqual(value, 0.0)
+        XCTAssertEqual(result, 70.84)
+    }
+    
+    func testConversionThroughIntermediateCurrency() {
+        let rates = [
+            RateModel(from: "CAD", rate: 0.92, to: "USD"),
+            RateModel(from: "USD", rate: 0.77, to: "GBP")
+        ]
+        
+        let currencyConversionGraph = CurrencyConversionGraph(rates: rates)
+
+        let enteredAmount = 100.00
+        let enteredCurrency = "CAD"
+        
+        let result = currencyConversionGraph.convertToGBP(enteredAmount, enteredCurrency, rates)
+        
+        XCTAssertEqual(result, 70.84)
+    }
+    
+    
+    func testNoConversionRateAvailable() {
+        let rates = [
+            RateModel(from: "USD", rate: 0.77, to: "GBP")
+        ]
+        
+        let currencyConversionGraph = CurrencyConversionGraph(rates: rates)
+
+        let enteredAmount = 100.00
+        let enteredCurrency = "YAN"
+        
+        let result = currencyConversionGraph.convertToGBP(enteredAmount, enteredCurrency, rates)
+        
+        XCTAssertEqual(result, 0.0)
     }
 }
 
