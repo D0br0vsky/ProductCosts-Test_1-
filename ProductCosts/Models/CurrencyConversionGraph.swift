@@ -7,7 +7,7 @@ protocol CurrencyConversionGraphProtocol {
 }
 
 final class CurrencyConversionGraph: CurrencyConversionGraphProtocol {
-    private var graph: [String: [String: Double]] = [:]
+    var graph: [String: [String: Double]] = [:]
     
     init(rates: [RateModel]) {
             buildGraph(from: rates)

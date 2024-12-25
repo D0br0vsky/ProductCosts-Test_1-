@@ -10,7 +10,6 @@ import XCTest
 @testable import ProductCosts
 
 final class convertToGBPTests: XCTestCase {
-    
     func testCurrencyIsAlreadyGBP() {
         let rates = [
             RateModel(from: "USD", rate: 0.77, to: "GBP")
@@ -70,6 +69,35 @@ final class convertToGBPTests: XCTestCase {
         let result = currencyConversionGraph.convertToGBP(enteredAmount, enteredCurrency, rates)
         
         XCTAssertEqual(result, 0.0)
+    }
+    
+    func testBuildGraphSuccessfully() {
+        let rates = [
+            RateModel(from: "USD", rate: 0.77, to: "GBP")
+        ]
+        let currencyConversionGraph = CurrencyConversionGraph(rates: rates)
+
+        currencyConversionGraph.buildGraph(from: rates)
+
+        let expectedGraph = ["USD": ["GBP": 0.77]]
+            XCTAssertEqual(currencyConversionGraph.graph, expectedGraph)
+    }
+    
+    func testUpdateGraphSuccessfully(){
+        let initialRates = [
+                RateModel(from: "USD", rate: 0.77, to: "GBP")
+            ]
+            
+            let updatedRates = [
+                RateModel(from: "AUD", rate: 1.20, to: "GBP")
+            ]
+        
+        let currencyConversionGraph = CurrencyConversionGraph(rates: initialRates)
+
+        currencyConversionGraph.updateGraph(with: updatedRates)
+
+        let expectedGraph = ["AUD": ["GBP": 1.20]]
+            XCTAssertEqual(currencyConversionGraph.graph, expectedGraph)
     }
 }
 
