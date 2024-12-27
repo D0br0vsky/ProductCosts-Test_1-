@@ -2,7 +2,7 @@
 import Foundation
 
 protocol CurrencyConversionGraphProtocol {
-    func convertToGBP(_ amount: Double,_ currency: String,_ rates: [RateModel]) -> Double
+    func convertToGBP(_ amount: Double,_ currency: String) -> Double
     func updateGraph(with rates: [RateModel])
 }
 
@@ -24,7 +24,7 @@ final class CurrencyConversionGraph: CurrencyConversionGraphProtocol {
             buildGraph(from: rates)
         }
     
-    func convertToGBP(_ amount: Double,_ currency: String,_ rates: [RateModel]) -> Double {
+    func convertToGBP(_ amount: Double,_ currency: String) -> Double {
         if currency == "GBP" {
             return amount
         } else if let directRateToGBP = graph[currency]?["GBP"] {

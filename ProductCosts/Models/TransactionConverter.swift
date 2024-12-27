@@ -15,7 +15,7 @@ final class TransactionConverter: TransactionConverterProtocol {
     }
     
     func makeConversionModel(_ transaction: TransactionModel,_ rates: [RateModel]) -> СonversionModel {
-        let convertedAmount = currencyConversionGraph.convertToGBP(transaction.amount, transaction.currency, rates)
+        let convertedAmount = currencyConversionGraph.convertToGBP(transaction.amount, transaction.currency)
         let amountAndCurrency = currencyFormatter.convertToCurrencyString(transaction.amount, transaction.currency)
         return СonversionModel(
             convertGBP: "£ \(String(format: "%.2f", convertedAmount))",

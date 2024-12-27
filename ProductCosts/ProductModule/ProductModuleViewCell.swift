@@ -62,14 +62,14 @@ final class ProductModuleViewCell: UITableViewCell {
     }
 }
 
-// MARK: - ExtensionConstrains
+// MARK: - Extension Constrains
 private extension ProductModuleViewCell {
     func commonInit() {
-        setupSubview()
+        setupSubviews()
         setupConstraints()
     }
     
-    func setupSubview() {
+    func setupSubviews() {
         stack.addArrangedSubview(skuLabel)
         stack.addArrangedSubview(numLabel)
         contentView.addSubview(stack)

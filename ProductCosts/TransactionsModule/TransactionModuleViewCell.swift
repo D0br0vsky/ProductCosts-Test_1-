@@ -63,14 +63,14 @@ final class TransactionModuleViewCell: UITableViewCell {
     }
 }
 
-// MARK: - ExtensionConstrains
+// MARK: - Extension Constrains
 private extension TransactionModuleViewCell {
     func commonInit() {
-        setupSubView()
+        setupSubViews()
         setupConstraints()
     }
     
-    func setupSubView() {
+    func setupSubViews() {
         stack.addArrangedSubview(amountAndCurrency)
         stack.addArrangedSubview(amountConvertGBP)
         contentView.addSubview(stack)

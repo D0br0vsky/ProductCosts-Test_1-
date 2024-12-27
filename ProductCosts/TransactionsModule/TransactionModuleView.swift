@@ -91,7 +91,7 @@ extension TransactionModuleView: UITableViewDataSource {
     }
 }
 
-// MARK: - ExtensionConstrains
+// MARK: - Extension Constrains
 extension TransactionModuleView {
     func commonInit() {
         backgroundColor = .systemBackground

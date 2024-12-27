@@ -34,6 +34,7 @@ final class ProductModuleController: UIViewController {
     }
 }
 
+// MARK: - Extension Protocol
 extension ProductModuleController: ProductModuleViewProtocol {
     func update(model: ProductModuleView.Model) {
         customView.update(model: model)

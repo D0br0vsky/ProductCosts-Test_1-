@@ -19,7 +19,7 @@ final class convertToGBPTests: XCTestCase {
         let enteredAmount = 100.00
         let enteredCurrency = "GBP"
         
-        let result = currencyConversionGraph.convertToGBP(enteredAmount, enteredCurrency, rates)
+        let result = currencyConversionGraph.convertToGBP(enteredAmount, enteredCurrency)
         
         XCTAssertEqual(result, 100.0)
     }
@@ -34,7 +34,7 @@ final class convertToGBPTests: XCTestCase {
         let enteredAmount = 100.00
         let enteredCurrency = "CAD"
         
-        let result = currencyConversionGraph.convertToGBP(enteredAmount, enteredCurrency, rates)
+        let result = currencyConversionGraph.convertToGBP(enteredAmount, enteredCurrency)
         
         XCTAssertEqual(result, 70.84)
     }
@@ -50,7 +50,7 @@ final class convertToGBPTests: XCTestCase {
         let enteredAmount = 100.00
         let enteredCurrency = "CAD"
         
-        let result = currencyConversionGraph.convertToGBP(enteredAmount, enteredCurrency, rates)
+        let result = currencyConversionGraph.convertToGBP(enteredAmount, enteredCurrency)
         
         XCTAssertEqual(result, 70.84)
     }
@@ -66,7 +66,7 @@ final class convertToGBPTests: XCTestCase {
         let enteredAmount = 100.00
         let enteredCurrency = "YAN"
         
-        let result = currencyConversionGraph.convertToGBP(enteredAmount, enteredCurrency, rates)
+        let result = currencyConversionGraph.convertToGBP(enteredAmount, enteredCurrency)
         
         XCTAssertEqual(result, 0.0)
     }

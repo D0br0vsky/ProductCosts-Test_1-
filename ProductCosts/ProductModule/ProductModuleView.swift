@@ -83,7 +83,7 @@ extension ProductModuleView: UITableViewDelegate {
     }
 }
 
-// MARK: - ConstraintsSubviews
+// MARK: - Extension Constrains
 private extension ProductModuleView {
     func commonInit() {
         backgroundColor = .systemBackground

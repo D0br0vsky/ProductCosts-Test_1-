@@ -34,6 +34,7 @@ final class TransactionModuleController: UIViewController {
     }
 }
 
+// MARK: - Extension Protocol
 extension TransactionModuleController: TransactionModuleViewProtocol {
     func update(model: TransactionModuleView.Model) {
         customView.update(model: model)
