@@ -9,17 +9,30 @@ import UIKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    var ratesDataStorage: RatesDataStorageProtocol?
     var window: UIWindow?
-    
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
+
+        let loadingVC = LoadingViewController()
+        window?.rootViewController = loadingVC
+        window?.makeKeyAndVisible()
+
+        ProductModuleFactory.preloadRatesData(
+            progressHandler: { progress, status in
+                DispatchQueue.main.async {
+                    loadingVC.updateProgress(progress, status: status)
+                }
+            },
+            completion: { ratesDataStorage in
+                DispatchQueue.main.async {
+                    let mainVC = ProductModuleFactory.make(ratesDataStorage: ratesDataStorage)
+                    let nav = CustomNavigationController(rootViewController: mainVC)
+                    self.window?.rootViewController = nav
+                }
+            }
+        )
         
-        ProductModuleFactory.makeWithInitializedRates { [weak self] viewController in
-            let nav = CustomNavigationController(rootViewController: viewController)
-            self?.window?.rootViewController = nav
-            self?.window?.makeKeyAndVisible()
-        }
         return true
     }
 }
