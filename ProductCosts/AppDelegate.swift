@@ -14,14 +14,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
 
-        let loadingVC = LoadingViewController()
-        window?.rootViewController = loadingVC
+        let loadingViewController = LoadingViewController()
+        window?.rootViewController = loadingViewController
         window?.makeKeyAndVisible()
 
         ProductModuleFactory.preloadRatesData(
             progressHandler: { progress, status in
                 DispatchQueue.main.async {
-                    loadingVC.updateProgress(progress, status: status)
+                    loadingViewController.updateProgress(progress, status: status)
                 }
             },
             completion: { ratesDataStorage in
