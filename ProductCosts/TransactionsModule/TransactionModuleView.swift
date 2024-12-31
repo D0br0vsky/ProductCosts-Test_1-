@@ -48,9 +48,7 @@ final class TransactionModuleView: UIView {
     func update(model: Model) {
         self.model = model
         totalCount.text = model.totalCount
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-        }
+        self.tableView.reloadData()
     }
     
     func showError() {

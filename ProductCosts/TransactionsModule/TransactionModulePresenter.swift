@@ -9,15 +9,13 @@ final class TransactionModulePresenter: TransactionModulePresenterProtocol {
     var title: String { operationModel.sku }
     weak var view: TransactionModuleViewProtocol?
     private let operationModel: OperationModel
-    private let service: DataServiceProtocol
     private let ratesDataStorage: RatesDataStorageProtocol
     private let transactionConverter: TransactionConverterProtocol
     private let currencyConversionGraph: CurrencyConversionGraphProtocol
     
     private var conversionModel: [СonversionModel] = []
     
-    init(operationModel: OperationModel, service: DataServiceProtocol, ratesDataStorage: RatesDataStorageProtocol, transactionConverter: TransactionConverterProtocol, currencyConversionGraph: CurrencyConversionGraphProtocol) {
-        self.service = service
+    init(operationModel: OperationModel, ratesDataStorage: RatesDataStorageProtocol, transactionConverter: TransactionConverterProtocol, currencyConversionGraph: CurrencyConversionGraphProtocol) {
         self.operationModel = operationModel
         self.ratesDataStorage = ratesDataStorage
         self.transactionConverter = transactionConverter
@@ -31,11 +29,9 @@ final class TransactionModulePresenter: TransactionModulePresenterProtocol {
 
 extension TransactionModulePresenter {
     func ratesLoad() {
-        view?.startLoader()
         let ratesValues = ratesDataStorage.getRates()
         convertingReplacingValues(operationModel, ratesValues)
         updateUI()
-        view?.stopLoader()
     }
 }
 
