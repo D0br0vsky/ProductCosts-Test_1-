@@ -1,3 +1,4 @@
+import Dispatch
 
 protocol ProductModulePresenterProtocol {
     var title: String { get }
@@ -30,19 +31,40 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
     }
     
     func transactionsLoad() {
+        let dispatchGroup = DispatchGroup()
         view?.startLoader()
+        
+        dispatchGroup.enter()
+        var transactions: [TransactionModel] = []
+        var rates: [RateModel] = []
+        
         service.fetchTransactions { [weak self] result in
-            guard let self = self else { return }
-            self.view?.stopLoader()
+            defer { dispatchGroup.leave() }
             switch result {
             case .success(let dtoTransactions):
                 let mapper = DefaultMapper()
-                let preparedTransactionData = dtoTransactions.compactMap { mapper.transactionConverter(dto: $0) }
-                addTransactionsToOperation(preparedTransactionData)
-                updateUI()
+                transactions = dtoTransactions.compactMap { mapper.transactionConverter(dto: $0) }
             case .failure(_):
-                self.view?.showError()
+                self?.view?.showError()
             }
+        }
+        
+        dispatchGroup.enter()
+        ratesDataStorage.ratesLoad {
+            rates = self.ratesDataStorage.getRates()
+                dispatchGroup.leave()
+            }
+        dispatchGroup.notify(queue: .main) { [weak self] in
+            guard let self = self else { return }
+            self.view?.stopLoader()
+            
+            if transactions.isEmpty {
+                self.view?.showEmpty()
+                return
+            }
+            
+            self.addTransactionsToOperation(transactions)
+            updateUI()
         }
     }
 }

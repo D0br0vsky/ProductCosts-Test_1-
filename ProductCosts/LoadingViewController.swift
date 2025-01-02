@@ -9,10 +9,6 @@ class LoadingViewController: UIViewController {
         super.viewDidLoad()
         commonInit()
     }
-
-    func setupUI() {
-        view.backgroundColor = .white
-    }
 }
 
 // MARK: - Extension Constrains
