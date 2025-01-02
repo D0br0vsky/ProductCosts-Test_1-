@@ -16,16 +16,13 @@ extension LoadingViewController {
     func commonInit() {
         setupSubviews()
         setupConstraints()
+        configureAppearance()
     }
 
     func setupSubviews() {
         view.addSubview(progressView)
         view.addSubview(statusLabel)
 
-        statusLabel.text = "Loading..."
-        statusLabel.textAlignment = .center
-        statusLabel.font = .systemFont(ofSize: 16)
-        statusLabel.textColor = .white
     }
 
     func setupConstraints() {
@@ -47,5 +44,15 @@ extension LoadingViewController {
     func updateProgress(_ progress: Float, status: String) {
         progressView.setProgress(progress, animated: true)
         statusLabel.text = status
+    }
+    
+    func configureAppearance() {
+        view.backgroundColor = .white
+        progressView.trackTintColor = .lightGray
+        progressView.progressTintColor = .black
+        statusLabel.textColor = .black
+        statusLabel.text = "Loading..."
+        statusLabel.textAlignment = .center
+        statusLabel.font = .systemFont(ofSize: 16)
     }
 }
