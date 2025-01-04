@@ -29,6 +29,8 @@ final class TransactionModuleView: UIView {
         label.textColor = .black
         label.font = UIFont.boldSystemFont(ofSize: 18)
         label.textAlignment = .left
+        label.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         return label
     }()
     

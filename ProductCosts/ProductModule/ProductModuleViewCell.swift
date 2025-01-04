@@ -15,6 +15,8 @@ final class ProductModuleViewCell: UITableViewCell {
         label.textColor = .black
         label.font = UIFont.boldSystemFont(ofSize: 18)
         label.textAlignment = .left
+        label.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         return label
     }()
     
@@ -24,6 +26,8 @@ final class ProductModuleViewCell: UITableViewCell {
         label.textColor = .black
         label.font = UIFont.boldSystemFont(ofSize: 14)
         label.textAlignment = .right
+        label.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         return label
     }()
     
@@ -79,19 +83,24 @@ private extension ProductModuleViewCell {
     func setupConstraints() {
         stack.translatesAutoresizingMaskIntoConstraints = false
         line.translatesAutoresizingMaskIntoConstraints = false
+        skuLabel.translatesAutoresizingMaskIntoConstraints = false
+        numLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             stack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             stack.bottomAnchor.constraint(equalTo: line.topAnchor, constant: -8),
+
+            skuLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 50),
+            numLabel.widthAnchor.constraint(equalToConstant: 150),
             
             line.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 8),
             line.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             line.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             line.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            
             line.heightAnchor.constraint(equalToConstant: 1.0 / UIScreen.main.scale)
+            
         ])
     }
 }

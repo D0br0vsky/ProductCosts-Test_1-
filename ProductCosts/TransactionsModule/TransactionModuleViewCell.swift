@@ -16,6 +16,8 @@ final class TransactionModuleViewCell: UITableViewCell {
         label.textColor = .black
         label.font = UIFont.boldSystemFont(ofSize: 18)
         label.textAlignment = .left
+        label.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         return label
     }()
     
@@ -25,6 +27,8 @@ final class TransactionModuleViewCell: UITableViewCell {
         label.textColor = .lightGray
         label.font = UIFont.boldSystemFont(ofSize: 16)
         label.textAlignment = .right
+        label.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         return label
     }()
     
@@ -80,6 +84,8 @@ private extension TransactionModuleViewCell {
     func setupConstraints() {
         stack.translatesAutoresizingMaskIntoConstraints = false
         line.translatesAutoresizingMaskIntoConstraints = false
+        amountAndCurrency.translatesAutoresizingMaskIntoConstraints = false
+        amountConvertGBP.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             stack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
@@ -87,11 +93,13 @@ private extension TransactionModuleViewCell {
             stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             stack.bottomAnchor.constraint(equalTo: line.topAnchor, constant: -8),
             
+            amountAndCurrency.widthAnchor.constraint(greaterThanOrEqualToConstant: 100),
+            amountConvertGBP.widthAnchor.constraint(equalToConstant: 100),
+            
             line.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 8),
             line.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             line.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             line.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            
             line.heightAnchor.constraint(equalToConstant: 1.0 / UIScreen.main.scale)
         ])
     }
