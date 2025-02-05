@@ -1,18 +1,18 @@
 import UIKit
 final class ProductModuleFactory {
-    private static func makeDataLoader() -> DataLoader {
+    func makeDataLoader() -> DataLoader {
         return DataLoader()
     }
 
-    private static func makeDataService(dataLoader: DataLoader) -> DataService {
+    func makeDataService(dataLoader: DataLoader) -> DataService {
         return DataService(loadData: dataLoader)
     }
 
-    private static func makeRatesDataStorage(service: DataService) -> RatesDataStorage {
+    func makeRatesDataStorage(service: DataService) -> RatesDataStorage {
         return RatesDataStorage(service: service)
     }
 
-    static func preloadRatesData(progressHandler: @escaping (Float, String) -> Void, completion: @escaping (RatesDataStorageProtocol) -> Void) {
+    func preloadRatesData(progressHandler: @escaping (Float, String) -> Void, completion: @escaping (RatesDataStorageProtocol) -> Void) {
         let dataLoader = makeDataLoader()
         let service = makeDataService(dataLoader: dataLoader)
         let ratesDataStorage = makeRatesDataStorage(service: service)
@@ -31,11 +31,10 @@ final class ProductModuleFactory {
         }
     }
 
-    static func make(ratesDataStorage: RatesDataStorageProtocol) -> UIViewController {
+    func make(ratesDataStorage: RatesDataStorageProtocol) -> UIViewController {
         let factory = TransactionModuleFactory(ratesDataStorage: ratesDataStorage)
         let dataLoader = makeDataLoader()
         let service = makeDataService(dataLoader: dataLoader)
-        
         let router = ProductModuleRouter(factory: factory)
         let presenter = ProductModulePresenter(service: service, router: router, ratesDataStorage: ratesDataStorage)
         let vc = ProductModuleController(presenter: presenter)

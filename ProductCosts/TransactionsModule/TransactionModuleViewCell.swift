@@ -2,7 +2,6 @@
 import UIKit
 
 final class TransactionModuleViewCell: UITableViewCell {
-    
     static let id = "TransactionModuleViewCell"
     
     struct Model {

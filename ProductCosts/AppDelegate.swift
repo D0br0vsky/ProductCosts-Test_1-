@@ -18,7 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = loadingViewController
         window?.makeKeyAndVisible()
 
-        ProductModuleFactory.preloadRatesData(
+        let productModuleFactory = ProductModuleFactory()
+        productModuleFactory.preloadRatesData(
             progressHandler: { progress, status in
                 DispatchQueue.main.async {
                     loadingViewController.updateProgress(progress, status: status)
@@ -26,13 +27,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             },
             completion: { ratesDataStorage in
                 DispatchQueue.main.async {
-                    let mainVC = ProductModuleFactory.make(ratesDataStorage: ratesDataStorage)
+                    let mainVC = productModuleFactory.make(ratesDataStorage: ratesDataStorage)
                     let nav = CustomNavigationController(rootViewController: mainVC)
                     self.window?.rootViewController = nav
                 }
             }
         )
-
         return true
     }
 }
