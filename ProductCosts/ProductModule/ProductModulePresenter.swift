@@ -36,10 +36,9 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
         
         dispatchGroup.enter()
         var transactions: [TransactionModel] = []
-        var rates: [RateModel] = []
         
         service.fetchTransactions { [weak self] result in
-            defer { dispatchGroup.leave() }
+            dispatchGroup.leave()
             switch result {
             case .success(let dtoTransactions):
                 let mapper = DefaultMapper()
@@ -50,20 +49,22 @@ final class ProductModulePresenter: ProductModulePresenterProtocol {
         }
         
         dispatchGroup.enter()
-        ratesDataStorage.ratesLoad {
-            rates = self.ratesDataStorage.getRates()
-                dispatchGroup.leave()
-            }
+        ratesDataStorage.ratesLoad { [weak self] in
+            guard let self = self else { return }
+            _ = ratesDataStorage.getRates()
+            dispatchGroup.leave()
+        }
+        
         dispatchGroup.notify(queue: .main) { [weak self] in
             guard let self = self else { return }
-            self.view?.stopLoader()
+            view?.stopLoader()
             
             if transactions.isEmpty {
-                self.view?.showEmpty()
+                view?.showEmpty()
                 return
             }
             
-            self.addTransactionsToOperation(transactions)
+            operationModel = createTransactionsToOperation(transactions)
             updateUI()
         }
     }
@@ -83,7 +84,8 @@ private extension ProductModulePresenter {
         view?.update(model: viewModel)
     }
     
-    func addTransactionsToOperation(_ newTransactions: [TransactionModel]) {
+    func createTransactionsToOperation(_ newTransactions: [TransactionModel]) -> [OperationModel] {
+        var result = [OperationModel]()
         var transactionsBySKU: [String: [TransactionModel]] = [:]
         for transaction in newTransactions {
             transactionsBySKU[transaction.sku, default: []].append(transaction)
@@ -91,7 +93,8 @@ private extension ProductModulePresenter {
         
         for (sku, transactions) in transactionsBySKU {
             let item = OperationModel(sku: sku, transactionModel: transactions)
-            operationModel.append(item)
+            result.append(item)
         }
+        return result
     }
 }
